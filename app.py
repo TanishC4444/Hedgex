@@ -5,39 +5,168 @@ import yfinance as yf
 import pandas as pd
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
+import requests
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 USER_DATA_FILE = "users.csv"
 SOLD_DATA_FILE = "sold.csv"
+BALANCE_FILE = "balance.txt"
+TRANSACTION_FILE = "transactions.csv"  # New transaction log file
 STARTING_BALANCE = 100000.00  # Initial balance
 
-# Ensure user data file exists
-if not os.path.exists(USER_DATA_FILE) or os.stat(USER_DATA_FILE).st_size == 0:
-    df = pd.DataFrame(columns=["Ticker", "Date Bought", "Quantity", "Price Bought", "Current Value", "Earnings", "Change %", "Status"])
-    df.to_csv(USER_DATA_FILE, index=False)
-    with open("balance.txt", "w") as f:
-        f.write(str(STARTING_BALANCE))
-
-if not os.path.exists(SOLD_DATA_FILE):
-    pd.DataFrame(columns=["Ticker", "Date Bought", "Quantity", "Price Bought", "Sell Price", "Profit", "Sell Date"]).to_csv(SOLD_DATA_FILE, index=False)
+# Initialize necessary files
+def init_files():
+    # Ensure user data file exists
+    if not os.path.exists(USER_DATA_FILE) or os.stat(USER_DATA_FILE).st_size == 0:
+        df = pd.DataFrame(columns=["Ticker", "Date Bought", "Quantity", "Price Bought", "Current Value", "Earnings", "Change %", "Status"])
+        df.to_csv(USER_DATA_FILE, index=False)
     
+    # Ensure sold data file exists
+    if not os.path.exists(SOLD_DATA_FILE):
+        pd.DataFrame(columns=["Ticker", "Date Bought", "Quantity", "Price Bought", "Sell Price", "Profit", "Sell Date"]).to_csv(SOLD_DATA_FILE, index=False)
+    
+    # Ensure balance file exists
+    if not os.path.exists(BALANCE_FILE):
+        with open(BALANCE_FILE, "w") as f:
+            f.write(str(STARTING_BALANCE))
+            
+    # Ensure transaction log file exists
+    if not os.path.exists(TRANSACTION_FILE):
+        pd.DataFrame(columns=["Date", "Type", "Ticker", "Quantity", "Price", "Total", "Balance After"]).to_csv(TRANSACTION_FILE, index=False)
+
+# Initialize files at startup
+init_files()
+
+# Function to log transaction
+def log_transaction(transaction_type, ticker, quantity, price, total, balance_after):
+    # Read existing transactions
+    if os.path.exists(TRANSACTION_FILE):
+        transactions_df = pd.read_csv(TRANSACTION_FILE)
+    else:
+        transactions_df = pd.DataFrame(columns=["Date", "Type", "Ticker", "Quantity", "Price", "Total", "Balance After"])
+    
+    # Create new transaction entry
+    new_transaction = pd.DataFrame({
+        "Date": [datetime.now().strftime('%Y-%m-%d %H:%M:%S')],
+        "Type": [transaction_type],  # "BUY" or "SELL"
+        "Ticker": [ticker],
+        "Quantity": [quantity],
+        "Price": [price],
+        "Total": [total],
+        "Balance After": [balance_after]
+    })
+    
+    # Add to transaction log
+    transactions_df = pd.concat([transactions_df, new_transaction], ignore_index=True)
+    transactions_df.to_csv(TRANSACTION_FILE, index=False)
 
 # Function to get balance
 def get_balance():
-    if not os.path.exists("balance.txt"):
-        with open("balance.txt", "w") as f:
+    try:
+        with open(BALANCE_FILE, "r") as f:
+            return float(f.read())
+    except (FileNotFoundError, ValueError):
+        # If file doesn't exist or contains invalid data, recreate it
+        with open(BALANCE_FILE, "w") as f:
             f.write(str(STARTING_BALANCE))
-    with open("balance.txt", "r") as f:
-        return float(f.read())
+        return STARTING_BALANCE
 
 # Function to update balance
 def update_balance(amount):
     balance = get_balance() + amount
-    with open("balance.txt", "w") as f:
+    with open(BALANCE_FILE, "w") as f:
         f.write(str(balance))
     return balance
+
+@app.route("/sell_stock", methods=["POST"])
+def sell_stock():
+    try:
+        ticker = request.args.get("ticker")
+        if not ticker:
+            return jsonify({"error": "Missing ticker"}), 400
+
+        df = pd.read_csv("users.csv")
+
+        # Check if stock exists
+        if ticker not in df["Ticker"].values:
+            return jsonify({"error": "Stock not found"}), 404
+
+        # Get the stock data before removing
+        stock_row = df[df["Ticker"] == ticker].iloc[0]
+        quantity = float(stock_row["Quantity"])
+        purchase_price = float(stock_row["Price Bought"])
+        current_value = float(stock_row["Current Value"])
+        price_per_share = current_value / quantity
+        
+        # Remove the stock from the user's holdings
+        df = df[df["Ticker"] != ticker]
+        df.to_csv("users.csv", index=False)
+        
+        # Update the balance
+        new_balance = update_balance(current_value)
+        
+        # Log the transaction
+        log_transaction("SELL", ticker, quantity, price_per_share, current_value, new_balance)
+        
+        return jsonify({
+            "message": f"Sold all shares of {ticker}",
+            "new_balance": new_balance
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/transactions", methods=["GET"])
+def get_transactions():
+    # Return all transactions
+    if not os.path.exists(TRANSACTION_FILE):
+        return jsonify([])
+    
+    transactions_df = pd.read_csv(TRANSACTION_FILE)
+    return jsonify(transactions_df.to_dict(orient="records"))
+
+def update_holdings():
+    try:
+        df = pd.read_csv("users.csv")
+
+        if df.empty:
+            return []  # Return empty list if no data
+
+        for index, row in df.iterrows():
+            ticker = row["Ticker"]
+            quantity = row["Quantity"]
+            
+            # Fetch current stock price
+            response = requests.get(f"http://localhost:5000/stock?ticker={ticker}")
+            if response.status_code == 200:
+                stock_data = response.json()
+                if stock_data and stock_data["prices"]:
+                    current_price = stock_data["prices"][-1]
+
+                    # Ensure numerical values are handled correctly
+                    quantity = float(quantity)
+                    price_bought = float(row["Price Bought"])
+
+                    # Update values
+                    df.at[index, "Current Value"] = round(current_price * quantity, 2)
+                    earnings = round((current_price - price_bought) * quantity, 2)
+                    change_percent = round(((current_price - price_bought) / price_bought) * 100, 2)
+
+                    df.at[index, "Earnings"] = earnings
+                    df.at[index, "Change %"] = float(change_percent)
+
+        df.to_csv("users.csv", index=False)
+        return df.to_dict(orient="records")  # Return updated data
+    
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.route("/update_holdings", methods=["GET"])
+def get_updated_holdings():
+    data = update_holdings()
+    return jsonify(data)
 
 @app.route('/')
 def main():
@@ -133,7 +262,10 @@ def trade_stock():
             "Status": ["OWNED"]
         })
         df = pd.concat([df, new_trade], ignore_index=True)
-        update_balance(-total_cost)
+        new_balance = update_balance(-total_cost)
+        
+        # Log the buy transaction
+        log_transaction("BUY", ticker, quantity, current_price, total_cost, new_balance)
 
     elif trade_type == "sell":
         stock_rows = df[(df["Ticker"] == ticker) & (df["Quantity"] > 0)]
@@ -161,7 +293,10 @@ def trade_stock():
 
         # Remove sold stocks from users.csv
         df = df[df["Ticker"] != ticker]
-        update_balance(total_cost)
+        new_balance = update_balance(total_cost)
+        
+        # Log the sell transaction
+        log_transaction("SELL", ticker, quantity, current_price, total_cost, new_balance)
 
     df.to_csv(USER_DATA_FILE, index=False)
     return jsonify({"success": f"{trade_type.capitalize()} {quantity} shares of {ticker} at ${current_price:.2f}", "balance": get_balance()})
@@ -170,8 +305,30 @@ def trade_stock():
 def reset_account():
     df = pd.DataFrame(columns=["Ticker", "Date Bought", "Quantity", "Price Bought", "Current Value", "Earnings", "Change %", "Status"])
     df.to_csv(USER_DATA_FILE, index=False)
-    with open("balance.txt", "w") as f:
+    
+    # Reset balance
+    with open(BALANCE_FILE, "w") as f:
         f.write(str(STARTING_BALANCE))
+    
+    # Add a reset entry to the transaction log
+    if os.path.exists(TRANSACTION_FILE):
+        transactions_df = pd.read_csv(TRANSACTION_FILE)
+        
+        # Create reset transaction entry
+        reset_transaction = pd.DataFrame({
+            "Date": [datetime.now().strftime('%Y-%m-%d %H:%M:%S')],
+            "Type": ["RESET"],
+            "Ticker": ["SYSTEM"],
+            "Quantity": [0],
+            "Price": [0],
+            "Total": [0],
+            "Balance After": [STARTING_BALANCE]
+        })
+        
+        # Add to transaction log
+        transactions_df = pd.concat([transactions_df, reset_transaction], ignore_index=True)
+        transactions_df.to_csv(TRANSACTION_FILE, index=False)
+    
     return jsonify({"success": "Account reset successfully", "balance": STARTING_BALANCE})
 
 def open_browser():
