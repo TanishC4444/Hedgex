@@ -184,6 +184,155 @@ def learn():
 def balance():
     return jsonify({"balance": get_balance()})
 
+import re  # Add this import at the top with the other imports
+
+@app.route('/simulator')
+def simulator():
+    return render_template("simulator.html")
+
+@app.route('/evaluate_equation', methods=['POST'])
+def evaluate_equation():
+    try:
+        data = request.get_json()
+        ticker = data.get('ticker')
+        period = data.get('period', '1mo')
+        interval = data.get('interval', '1d')
+        equation = data.get('equation')
+        
+        if not ticker or not equation:
+            return jsonify({"error": "Missing required parameters"}), 400
+            
+        # Get stock data
+        stock = yf.Ticker(ticker)
+        data = stock.history(period=period, interval=interval)
+        
+        # Add fundamental data if needed
+        fundamentals = stock.info
+        
+        # Function to evaluate the equation
+        def evaluate_equation_points(data, equation):
+            # Create a DataFrame with reset index for easier access
+            df = data.reset_index()
+            
+            # Dictionary of column references
+            column_replacements = {col: f"row['{col}']" for col in df.columns}
+            
+            # Sort by length to replace longer names first (avoiding partial replacements)
+            sorted_cols = sorted(column_replacements.keys(), key=len, reverse=True)
+            
+            # Replace column names in the equation
+            eq_eval = equation
+            for col in sorted_cols:
+                # Use word boundary regex to avoid partial replacements
+                pattern = r'\b' + re.escape(str(col)) + r'\b'
+                eq_eval = re.sub(pattern, column_replacements[col], eq_eval)
+            
+            points = []
+            for idx, row in df.iterrows():
+                try:
+                    # Convert row to a dictionary
+                    row_dict = row.to_dict()
+                    result = eval(eq_eval, {"__builtins__": {}}, {"row": row_dict, "math": __import__('math')})
+                    points.append(float(result))
+                except Exception as e:
+                    points.append(None)
+                    print(f"Error evaluating equation at row {idx}: {e}")
+            
+            return points
+            
+        # Calculate next day movement
+        def calculate_movement(data):
+            movements = []
+            for i in range(len(data) - 1):  # Exclude the last row
+                next_open = data.iloc[i + 1]["Open"]
+                next_close = data.iloc[i + 1]["Close"]
+                movement = "+" if (next_close - next_open) > 0 else "-"
+                movements.append(movement)
+            
+            movements.append(None)  # Last row has no movement data
+            return movements
+            
+        # Calculate prediction accuracy
+        def calculate_accuracy(points, movements):
+            correct_predictions = 0
+            total_valid = 0
+            
+            for i in range(len(points) - 1):  # Exclude last point as it has no movement data
+                if points[i] is not None and movements[i] is not None:
+                    predicted_sign = "+" if points[i] > 0 else "-"
+                    if predicted_sign == movements[i]:
+                        correct_predictions += 1
+                    total_valid += 1
+            
+            accuracy = (correct_predictions / total_valid) * 100 if total_valid > 0 else 0
+            return accuracy
+        
+        # Evaluate equation
+        points = evaluate_equation_points(data, equation)
+        
+        # Calculate movements
+        movements = calculate_movement(data)
+        
+        # Calculate accuracy
+        accuracy = calculate_accuracy(points, movements)
+        
+        # Prepare result
+        result_data = []
+        dates = data.index.strftime('%Y-%m-%d').tolist()
+        
+        for i in range(len(dates)):
+            point_value = None if points[i] is None else float(points[i])
+            
+            result_data.append({
+                "date": dates[i],
+                "point": point_value,
+                "movement": movements[i]
+            })
+        
+        return jsonify({
+            "results": result_data,
+            "accuracy": round(accuracy, 2),
+            "columns": sorted(data.reset_index().columns.tolist())
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/available_columns', methods=['GET'])
+def get_available_columns():
+    try:
+        ticker = request.args.get('ticker')
+        period = request.args.get('period', '1mo')
+        interval = request.args.get('interval', '1d')
+        
+        if not ticker:
+            return jsonify({"error": "Missing ticker parameter"}), 400
+            
+        # Get stock data
+        stock = yf.Ticker(ticker)
+        data = stock.history(period=period, interval=interval)
+        
+        # Add fundamental data
+        fundamentals = stock.info
+        
+        # Return sorted list of columns
+        columns = sorted(data.reset_index().columns.tolist())
+        
+        return jsonify({
+            "columns": columns,
+            "time_periods": [
+                "1d", "5d", "1wk", "1mo", "3mo", "6mo", "1y", 
+                "2y", "5y", "10y", "ytd", "max"
+            ],
+            "intervals": [
+                "1m", "2m", "5m", "15m", "30m", "1h", "1d", 
+                "5d", "1wk", "1mo", "3mo"
+            ]
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/stock', methods=['GET'])
 def get_stock_data():
     ticker = request.args.get('ticker', '').upper()
