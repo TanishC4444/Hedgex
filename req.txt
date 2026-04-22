@@ -1,10 +1,5 @@
-Dependencies - 
-auto-py-to-exe==2.44.2
-
-App Structure - 
-
-google sites - EXE file
-
-Login page
-    Webapp
-
+flask
+yfinance
+pandas
+requests
+pytz

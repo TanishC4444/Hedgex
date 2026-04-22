@@ -97,7 +97,7 @@ git clone https://github.com/TanishC4444/PCIS_FantasySMG.git
 cd PCIS_FantasySMG
 
 # Install dependencies
-pip install -r req.txt
+pip install -r requirements.txt
 
 # Run the app
 python app.py
@@ -105,15 +105,57 @@ python app.py
 
 The app will open automatically at `http://127.0.0.1:5000`.
 
-### Dependencies
+### Verify installed module versions
+
+After installing, confirm everything is set up correctly:
+
+```bash
+# Check all dependencies at once
+pip show flask yfinance pandas requests pytz
+
+# Or check one at a time
+pip show flask
+
+# See every installed package and version
+pip list
+```
+
+---
+
+## Using the Repo
+
+### If you're a collaborator
+
+```bash
+# Always pull latest changes before you start working
+git pull origin main
+
+# After making changes, push them up
+git add .
+git commit -m "describe what you changed"
+git push origin main
+```
+
+### If you want to suggest changes without direct access
+
+1. Click **Fork** on the GitHub repo page to copy it to your account
+2. Make your changes in your fork
+3. Open a **Pull Request** to submit them for review
+
+### Keeping your data local (recommended)
+
+The CSV files and `balance.txt` store your portfolio state. To avoid pushing your data or overwriting someone else's, create a `.gitignore` file in the root:
 
 ```
-flask
-yfinance
-pandas
-requests
-pytz
+users.csv
+sold.csv
+transactions.csv
+balance.txt
+__pycache__/
+*.pyc
 ```
+
+For a fresh install, `balance.txt` should contain `100000.0` and the CSVs should have headers only.
 
 ---
 
@@ -164,7 +206,7 @@ hedgex/
 ├── sold.csv             # Closed position history
 ├── transactions.csv     # Full transaction log
 ├── balance.txt          # Current virtual cash balance
-└── req.txt              # Python dependencies
+└── requirements.txt     # Python dependencies
 ```
 
 ---
