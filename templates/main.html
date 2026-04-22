@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hedgex — Learn Trading. Zero Risk.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--bg:#080d14;--bg2:#0a1220;--card:#0f1923;--card2:#131f2e;--border:#1a2840;--border2:#1f3050;--primary:#60cfff;--primary-dim:rgba(96,207,255,0.10);--primary-glow:rgba(96,207,255,0.20);--violet:#7c3aed;--violet-dim:rgba(124,58,237,0.12);--green:#10b981;--green-dim:rgba(16,185,129,0.10);--red:#ef4444;--red-dim:rgba(239,68,68,0.10);--amber:#f59e0b;--text:#ddeeff;--text2:#7a9fc0;--text3:#3d5a78;--heading:#eef6ff;--shadow:0 8px 40px rgba(0,0,0,0.6);--radius:16px;--nav-h:68px;--ease:cubic-bezier(0.4,0,0.2,1);}
+[data-theme="light"]{--bg:#f4f8ff;--bg2:#eaf2ff;--card:#ffffff;--card2:#f0f7ff;--border:#d0e4f5;--border2:#b8d4ec;--primary:#0284c7;--primary-dim:rgba(2,132,199,0.07);--primary-glow:rgba(2,132,199,0.18);--violet:#6d28d9;--violet-dim:rgba(109,40,217,0.08);--green:#059669;--green-dim:rgba(5,150,105,0.08);--red:#dc2626;--red-dim:rgba(220,38,38,0.07);--amber:#d97706;--text:#1a3050;--text2:#3d6a96;--text3:#90b8d8;--heading:#0a1f38;--shadow:0 8px 40px rgba(0,60,120,0.08);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;transition:background 0.4s,color 0.4s;}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;color:var(--heading);line-height:1.15;}
+a{text-decoration:none;color:inherit;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px;}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--nav-h);display:flex;align-items:center;background:rgba(8,13,20,0.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+[data-theme="light"] .nav{background:rgba(244,248,255,0.88);}
+.nav-inner{width:100%;max-width:1240px;margin:0 auto;padding:0 28px;display:flex;align-items:center;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;background:linear-gradient(90deg,var(--primary),#b0eeff);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.02em;flex-shrink:0;}
+.nav-links{display:flex;gap:2px;margin-left:auto;}
+.nav-links a{padding:7px 13px;border-radius:8px;font-size:0.88rem;font-weight:500;color:var(--text2);transition:color 0.2s,background 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--primary);background:var(--primary-dim);}
+.nav-right{display:flex;align-items:center;gap:10px;margin-left:18px;}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.92rem;transition:border-color 0.2s,color 0.2s;}
+.theme-btn:hover{border-color:var(--primary);color:var(--primary);}
+.btn-cta{padding:8px 18px;border-radius:8px;background:var(--primary);color:#05101a;font-weight:600;font-size:0.86rem;border:none;cursor:pointer;transition:opacity 0.2s,transform 0.2s;}
+.btn-cta:hover{opacity:0.85;transform:translateY(-1px);}
+.mobile-btn{display:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;align-items:center;justify-content:center;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:var(--nav-h);position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;pointer-events:none;}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px;opacity:0.22;}
+[data-theme="light"] .grid-bg{opacity:0.11;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);animation:orb-float 14s ease-in-out infinite alternate;}
+.orb1{width:480px;height:480px;top:-80px;right:-60px;background:radial-gradient(circle,rgba(96,207,255,0.12) 0%,transparent 70%);}
+.orb2{width:380px;height:380px;bottom:-80px;left:-60px;background:radial-gradient(circle,rgba(124,58,237,0.09) 0%,transparent 70%);animation-delay:-6s;}
+@keyframes orb-float{0%{transform:translate(0,0) scale(1);}100%{transform:translate(24px,-18px) scale(1.04);}}
+
+.hero-inner{max-width:1240px;margin:0 auto;padding:80px 28px;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;position:relative;z-index:1;}
+
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:999px;border:1px solid var(--border2);background:var(--card);font-size:0.8rem;color:var(--text2);margin-bottom:24px;}
+.dot-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:dot-pulse 2.2s ease-in-out infinite;}
+@keyframes dot-pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.hero-h1{font-size:clamp(2.6rem,4.5vw,4rem);font-weight:800;letter-spacing:-0.035em;margin-bottom:22px;}
+.hero-h1 .grad{background:linear-gradient(100deg,var(--primary) 0%,#b0eeff 60%,var(--violet) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero-sub{font-size:1.08rem;color:var(--text2);max-width:440px;margin-bottom:38px;line-height:1.75;}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:10px;background:var(--primary);color:#05101a;font-weight:600;font-size:0.93rem;border:none;cursor:pointer;transition:transform 0.3s var(--ease),box-shadow 0.3s var(--ease);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px var(--primary-glow);}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:10px;background:transparent;color:var(--text);font-weight:500;font-size:0.93rem;border:1px solid var(--border2);cursor:pointer;transition:border-color 0.2s,color 0.2s,background 0.2s;}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-dim);}
+
+/* HERO CARD */
+.hero-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;position:relative;overflow:hidden;}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--violet));}
+
+/* Card header */
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.card-label{font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;}
+.paper-badge{display:flex;align-items:center;gap:5px;font-size:0.75rem;color:var(--primary);font-weight:600;}
+.paper-badge i{font-size:0.7rem;}
+
+/* Total value hero row */
+.card-total-row{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+.total-left{}
+.total-sym{font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+.total-value{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--heading);letter-spacing:-0.03em;line-height:1;}
+.total-change{margin-top:6px;font-size:0.82rem;font-weight:600;}
+.total-right{text-align:right;}
+.total-icon{width:46px;height:46px;border-radius:12px;background:var(--primary-dim);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+
+/* Stat grid */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.stat-chip{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color 0.2s;}
+.stat-chip:hover{border-color:var(--border2);}
+.sc-sym{font-size:0.7rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
+.sc-val{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--heading);line-height:1.1;}
+.sc-sub{font-size:0.73rem;color:var(--text3);margin-top:4px;}
+
+/* Divider */
+.card-divider{height:1px;background:var(--border);margin:16px 0;}
+
+/* Positions row */
+.positions-row{display:flex;align-items:center;justify-content:space-between;}
+.pos-label{font-size:0.82rem;color:var(--text2);display:flex;align-items:center;gap:7px;}
+.pos-label i{color:var(--text3);font-size:0.8rem;}
+.pos-count{display:flex;align-items:center;gap:8px;}
+.pos-num{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--heading);}
+.pos-pill{padding:2px 9px;border-radius:999px;background:var(--primary-dim);color:var(--primary);font-size:0.72rem;font-weight:600;}
+
+.up{color:var(--green);}
+.dn{color:var(--red);}
+
+/* SECTIONS */
+.section{padding:100px 0;}
+.s-inner{max-width:1240px;margin:0 auto;padding:0 28px;}
+.s-label{display:inline-flex;align-items:center;gap:7px;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary);margin-bottom:14px;}
+.s-label::before{content:'';width:18px;height:2px;background:var(--primary);border-radius:999px;}
+.s-title{font-size:clamp(1.8rem,2.8vw,2.6rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:14px;}
+.s-sub{font-size:1rem;color:var(--text2);max-width:480px;}
+
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px;}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;transition:transform 0.35s var(--ease),border-color 0.3s,box-shadow 0.35s;}
+.feat-card:hover{transform:translateY(-5px);border-color:var(--primary);box-shadow:0 20px 48px rgba(0,0,0,0.35);}
+.feat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:18px;}
+.fi-blue{background:var(--primary-dim);color:var(--primary);}
+.fi-violet{background:var(--violet-dim);color:var(--violet);}
+.fi-green{background:var(--green-dim);color:var(--green);}
+.feat-title{font-size:1rem;font-weight:700;margin-bottom:8px;}
+.feat-desc{font-size:0.87rem;color:var(--text2);line-height:1.7;}
+
+/* HOW IT WORKS */
+.how-bg{background:var(--bg2);}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:48px;margin-top:72px;}
+.how-step{text-align:center;position:relative;}
+.how-step::after{content:'';position:absolute;top:36px;left:calc(50% + 36px);right:calc(-50% + 36px);height:1px;background:linear-gradient(90deg,var(--primary),transparent);opacity:0.2;}
+.how-step:last-child::after{display:none;}
+.how-num{width:72px;height:72px;border-radius:50%;background:var(--card);border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;margin:0 auto 28px;font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;color:var(--primary);}
+.how-title{font-size:1rem;font-weight:700;margin-bottom:10px;}
+.how-desc{font-size:0.86rem;color:var(--text2);line-height:1.75;max-width:200px;margin:0 auto;}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;}
+.about-text p{color:var(--text2);line-height:1.85;margin-bottom:18px;font-size:0.97rem;}
+.quote-block{border-left:3px solid var(--primary);padding:18px 24px;background:var(--card);border-radius:0 10px 10px 0;margin-top:28px;}
+.quote-block p{font-style:italic;font-size:1.02rem;color:var(--text);margin-bottom:10px;line-height:1.7;}
+.quote-attr{font-size:0.83rem;font-weight:600;color:var(--primary);}
+.mission-cards{display:flex;flex-direction:column;gap:14px;}
+.mission-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;gap:16px;align-items:flex-start;transition:border-color 0.25s;}
+.mission-card:hover{border-color:var(--primary);}
+.mc-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.mc-title{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:4px;}
+.mc-desc{font-size:0.84rem;color:var(--text2);line-height:1.65;}
+
+/* TEAM */
+.how-bg2{background:var(--bg2);}
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:56px;max-width:720px;}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px;transition:transform 0.3s var(--ease),border-color 0.3s;}
+.team-card:hover{transform:translateY(-4px);border-color:var(--primary);}
+.team-av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:18px;border:2px solid var(--border2);}
+.av-blue{background:var(--primary-dim);color:var(--primary);}
+.av-violet{background:var(--violet-dim);color:var(--violet);}
+.team-name{font-size:1.05rem;font-weight:700;margin-bottom:4px;}
+.team-role{font-size:0.78rem;color:var(--primary);font-weight:600;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:14px;}
+.team-bio{font-size:0.86rem;color:var(--text2);line-height:1.7;}
+.team-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.tag{padding:3px 9px;border-radius:5px;background:var(--card2);border:1px solid var(--border);font-size:0.76rem;color:var(--text3);}
+
+/* LEARN PREVIEW */
+.learn-bg{background:var(--bg2);}
+.learn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;}
+.learn-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:transform 0.3s var(--ease),border-color 0.3s;}
+.learn-card:hover{transform:translateY(-4px);border-color:var(--primary);}
+.lc-track{display:inline-block;padding:3px 10px;border-radius:5px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px;}
+.track-b{background:var(--green-dim);color:var(--green);}
+.track-a{background:var(--violet-dim);color:var(--violet);}
+.lc-title{font-size:0.97rem;font-weight:700;margin-bottom:8px;}
+.lc-desc{font-size:0.85rem;color:var(--text2);margin-bottom:16px;line-height:1.65;}
+.lc-foot{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--text3);}
+.lc-foot i{color:var(--primary);font-size:0.8rem;}
+
+/* CTA STRIP */
+.cta-strip{background:linear-gradient(140deg,rgba(96,207,255,0.06) 0%,rgba(124,58,237,0.06) 100%);border:1px solid var(--border2);border-radius:24px;padding:72px 56px;display:flex;justify-content:space-between;align-items:center;gap:40px;position:relative;overflow:hidden;}
+.cta-strip::before{content:'';position:absolute;top:-100px;right:-100px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(96,207,255,0.06) 0%,transparent 70%);}
+.cta-text h2{font-size:clamp(1.5rem,2.2vw,2.1rem);font-weight:800;margin-bottom:10px;}
+.cta-text p{color:var(--text2);font-size:0.95rem;max-width:400px;}
+.cta-btns{display:flex;gap:12px;flex-shrink:0;}
+
+/* FOOTER */
+.footer{background:var(--bg2);border-top:1px solid var(--border);padding:56px 0 28px;}
+.footer-inner{max-width:1240px;margin:0 auto;padding:0 28px;}
+.footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;margin-bottom:44px;}
+.footer-brand p{font-size:0.85rem;color:var(--text2);max-width:230px;line-height:1.7;margin-top:10px;}
+.footer-col h4{font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;}
+.footer-col a{display:block;font-size:0.86rem;color:var(--text2);margin-bottom:9px;transition:color 0.2s;}
+.footer-col a:hover{color:var(--primary);}
+.footer-bottom{border-top:1px solid var(--border);padding-top:22px;display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text3);flex-wrap:wrap;gap:10px;}
+
+/* FADE-UP */
+.fu{opacity:0;transform:translateY(22px);transition:opacity 0.7s var(--ease),transform 0.7s var(--ease);}
+.fu.in{opacity:1;transform:translateY(0);}
+.fu-d1{transition-delay:0.08s!important;}
+.fu-d2{transition-delay:0.16s!important;}
+.fu-d3{transition-delay:0.24s!important;}
+.fu-d4{transition-delay:0.32s!important;}
+
+@media(max-width:1024px){.hero-inner,.about-grid{grid-template-columns:1fr;gap:44px;}.feat-grid,.learn-grid{grid-template-columns:repeat(2,1fr);}.how-grid{grid-template-columns:repeat(2,1fr);}.footer-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){.nav-links{display:none;}.nav-links.open{display:flex;flex-direction:column;position:fixed;top:var(--nav-h);left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:16px 24px;gap:4px;z-index:899;}.mobile-btn{display:flex;}.feat-grid,.learn-grid,.team-grid{grid-template-columns:1fr;}.how-grid{grid-template-columns:1fr 1fr;}.cta-strip{flex-direction:column;padding:44px 28px;}.cta-btns{width:100%;}.cta-btns .btn-primary,.cta-btns .btn-ghost{flex:1;justify-content:center;}.footer-grid{grid-template-columns:1fr;}.stat-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Hedgex</a>
+    <div class="nav-links" id="navLinks">
+      <a href="/" class="active">Home</a>
+      <a href="/learn">Learn</a>
+      <a href="/practice">Practice</a>
+      <a href="/simulator">Simulator</a>
+      <a href="/analysis">Analysis</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-btn" id="themeBtn"><i class="fas fa-moon"></i></button>
+      <a href="/practice" class="btn-cta">Start Trading</a>
+      <button class="mobile-btn" id="mobileBtn"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="grid-bg"></div>
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+  </div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow"><span class="dot-pulse"></span>Paper trading — no real money at risk</div>
+      <h1 class="hero-h1">Learn to trade.<br><span class="grad">Build real skill.</span><br>Risk nothing.</h1>
+      <p class="hero-sub">Hedgex gives you $100,000 in virtual capital and structured lessons — so you can master investing before it counts.</p>
+      <div class="hero-ctas">
+        <a href="/practice" class="btn-primary"><i class="fas fa-chart-line"></i>Start Trading</a>
+        <a href="/learn" class="btn-ghost"><i class="fas fa-book-open"></i>Learn First</a>
+      </div>
+    </div>
+
+    <!-- PORTFOLIO CARD — stats only, no chart -->
+    <div>
+      <div class="hero-card">
+        <div class="card-top">
+          <span class="card-label">Your Paper Account</span>
+          <span class="paper-badge"><i class="fas fa-dot-circle"></i>Virtual Capital</span>
+        </div>
+
+        <!-- Total Portfolio Value — hero stat -->
+        <div class="card-total-row">
+          <div class="total-left">
+            <div class="total-sym">Total Portfolio Value</div>
+            <div class="total-value" id="heroTotal">$100,000.00</div>
+            <div class="total-change" id="heroTotalChg" style="color:var(--text3)">—</div>
+          </div>
+          <div class="total-right">
+            <div class="total-icon"><i class="fas fa-wallet"></i></div>
+          </div>
+        </div>
+
+        <!-- Three sub-stats -->
+        <div class="stat-grid">
+          <div class="stat-chip">
+            <div class="sc-sym">Cash</div>
+            <div class="sc-val" id="heroCash">$100,000</div>
+            <div class="sc-sub">Available to invest</div>
+          </div>
+          <div class="stat-chip">
+            <div class="sc-sym">Invested</div>
+            <div class="sc-val" id="heroInvested">$0.00</div>
+            <div class="sc-sub">Holdings value</div>
+          </div>
+          <div class="stat-chip">
+            <div class="sc-sym">Unrealized P&amp;L</div>
+            <div class="sc-val" id="heroPnl" style="color:var(--text3)">$0.00</div>
+            <div class="sc-sub" id="heroPnlSub">—</div>
+          </div>
+        </div>
+
+        <div class="card-divider"></div>
+
+        <!-- Open positions row -->
+        <div class="positions-row">
+          <div class="pos-label"><i class="fas fa-layer-group"></i>Open positions</div>
+          <div class="pos-count">
+            <span class="pos-num" id="heroPositions">0</span>
+            <span class="pos-pill" id="heroPosPill">No trades yet</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="s-inner">
+    <div class="fu">
+      <div class="s-label">Platform</div>
+      <h2 class="s-title">Everything you need to<br>become a better trader.</h2>
+      <p class="s-sub">Built for learners at every level — from your first stock to your first real strategy.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card fu fu-d1"><div class="feat-icon fi-blue"><i class="fas fa-chart-line"></i></div><div class="feat-title">Live Market Data</div><p class="feat-desc">Real stock prices powered by Yahoo Finance. Practice with actual market conditions during trading hours, not simulated prices.</p></div>
+      <div class="feat-card fu fu-d2"><div class="feat-icon fi-violet"><i class="fas fa-graduation-cap"></i></div><div class="feat-title">Structured Learning</div><p class="feat-desc">Tiered lessons from market basics to advanced strategies. Beginner and advanced tracks with formulas, definitions, and examples.</p></div>
+      <div class="feat-card fu fu-d3"><div class="feat-icon fi-green"><i class="fas fa-shield-alt"></i></div><div class="feat-title">Zero Real Risk</div><p class="feat-desc">Start with $100,000 in virtual capital. Make mistakes and learn from them without any real financial consequence.</p></div>
+      <div class="feat-card fu fu-d1"><div class="feat-icon fi-blue"><i class="fas fa-search"></i></div><div class="feat-title">Deep Stock Analysis</div><p class="feat-desc">Search any ticker for real price charts, quarterly results, key financial ratios, and live stats from Yahoo Finance.</p></div>
+      <div class="feat-card fu fu-d2"><div class="feat-icon fi-violet"><i class="fas fa-flask"></i></div><div class="feat-title">Equation Simulator</div><p class="feat-desc">Write custom prediction equations using price and fundamental data variables. Test their accuracy against historical results.</p></div>
+      <div class="feat-card fu fu-d3"><div class="feat-icon fi-green"><i class="fas fa-chart-pie"></i></div><div class="feat-title">Portfolio Tracking</div><p class="feat-desc">Watch your virtual holdings, P&L, and transaction history over time — mirroring a real brokerage account dashboard.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how-bg">
+  <div class="s-inner">
+    <div class="fu" style="text-align:center;">
+      <div class="s-label" style="justify-content:center;">How it works</div>
+      <h2 class="s-title" style="text-align:center;">From zero to confident<br>in four steps.</h2>
+      <p class="s-sub" style="text-align:center;margin:0 auto 0;">No finance background needed. Hedgex meets you where you are.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-step fu fu-d1">
+        <div class="how-num">1</div>
+        <div class="how-title">Pick your track</div>
+        <p class="how-desc">Beginner or Advanced. Start with the basics or jump straight into technical analysis and fundamental ratios.</p>
+      </div>
+      <div class="how-step fu fu-d2">
+        <div class="how-num">2</div>
+        <div class="how-title">Learn the concepts</div>
+        <p class="how-desc">Visual charts, tables, formulas, and real examples — covering everything from P/E ratios to RSI signals.</p>
+      </div>
+      <div class="how-step fu fu-d3">
+        <div class="how-num">3</div>
+        <div class="how-title">Practice trades</div>
+        <p class="how-desc">Buy and sell with $100K virtual capital during live market hours using real prices from Yahoo Finance.</p>
+      </div>
+      <div class="how-step fu fu-d4">
+        <div class="how-num">4</div>
+        <div class="how-title">Analyze and improve</div>
+        <p class="how-desc">Review your P&L, deep-dive any stock, and test prediction equations against real historical market data.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section">
+  <div class="s-inner">
+    <div class="about-grid">
+      <div class="about-text fu">
+        <div class="s-label">Our story</div>
+        <h2 class="s-title">Built to close the financial literacy gap.</h2>
+        <p>Hedgex was built in junior year of high school. The stock market was fascinating — but every learning resource was either too advanced, too vague, or locked behind a paywall. So the platform got built from scratch.</p>
+        <p>What started as a PCIS capstone project grew into a full paper trading platform with real market data, structured lessons, and tools that mirror actual brokerage apps. The mission is simple: make investing education accessible to everyone.</p>
+        <div class="quote-block">
+          <p>I created Hedgex because I wanted to give anyone the opportunity to take control of their financial future through the world of investing.</p>
+          <span class="quote-attr">— Tanish Chauhan, Founder</span>
+        </div>
+      </div>
+      <div class="fu fu-d2">
+        <div class="s-label">Mission</div>
+        <h3 style="font-size:1.3rem;font-weight:800;margin-bottom:24px;color:var(--heading);">Financial literacy for everyone.</h3>
+        <div class="mission-cards">
+          <div class="mission-card">
+            <div class="mc-icon fi-blue"><i class="fas fa-book-open"></i></div>
+            <div><div class="mc-title">Educational First</div><p class="mc-desc">Every feature is designed to teach. From practice trades to analysis tools — the goal is understanding, not just activity.</p></div>
+          </div>
+          <div class="mission-card">
+            <div class="mc-icon fi-violet"><i class="fas fa-unlock"></i></div>
+            <div><div class="mc-title">Completely Free</div><p class="mc-desc">No subscriptions, no paywalls, no ads. Hedgex is and will always be free to use for any student.</p></div>
+          </div>
+          <div class="mission-card">
+            <div class="mc-icon fi-green"><i class="fas fa-shield-alt"></i></div>
+            <div><div class="mc-title">Real Tools, Zero Risk</div><p class="mc-desc">Real market data applied to virtual capital — so mistakes cost nothing but still teach everything.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section how-bg">
+  <div class="s-inner">
+    <div class="fu">
+      <div class="s-label">Team</div>
+      <h2 class="s-title">Two people. One shared goal.</h2>
+    </div>
+    <div class="team-grid">
+      <div class="team-card fu fu-d1">
+        <div class="team-av av-blue">TC</div>
+        <div class="team-name">Tanish Chauhan</div>
+        <div class="team-role">Founder & Developer</div>
+        <p class="team-bio">High school student with a passion for technology and financial education. Started coding at 11. Built Hedgex as a PCIS capstone and turned it into a platform used by students across the district.</p>
+        <div class="team-tags"><span class="tag">Python</span><span class="tag">Flask</span><span class="tag">HTML/CSS/JS</span><span class="tag">YFinance</span></div>
+      </div>
+      <div class="team-card fu fu-d2">
+        <div class="team-av av-violet">SS</div>
+        <div class="team-name">Shubhrose Singh</div>
+        <div class="team-role">Mentor</div>
+        <p class="team-bio">UCLA graduate and Data Engineer passionate about mentoring the next generation. Experienced in Python, Git, and building efficient data pipelines with a focus on practical knowledge transfer.</p>
+        <div class="team-tags"><span class="tag">Data Engineering</span><span class="tag">Python</span><span class="tag">Git</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARN PREVIEW -->
+<section class="section learn-bg">
+  <div class="s-inner">
+    <div class="fu" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div class="s-label">Learn</div>
+        <h2 class="s-title">Two tracks. One goal.</h2>
+      </div>
+      <a href="/learn" class="btn-ghost">View all lessons <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="learn-grid">
+      <div class="learn-card fu fu-d1"><span class="lc-track track-b">Beginner</span><div class="lc-title">What is a stock?</div><p class="lc-desc">Ownership, market cap, share price — what it all means in plain language.</p><div class="lc-foot"><i class="fas fa-clock"></i>5 min</div></div>
+      <div class="learn-card fu fu-d2"><span class="lc-track track-b">Beginner</span><div class="lc-title">Reading a stock chart</div><p class="lc-desc">Candlesticks, volume bars, support and resistance — visualized and explained.</p><div class="lc-foot"><i class="fas fa-clock"></i>8 min</div></div>
+      <div class="learn-card fu fu-d3"><span class="lc-track track-b">Beginner</span><div class="lc-title">Risk & reward math</div><p class="lc-desc">The formulas behind position sizing, stop-losses, and risk/reward ratios.</p><div class="lc-foot"><i class="fas fa-clock"></i>6 min</div></div>
+      <div class="learn-card fu fu-d1"><span class="lc-track track-a">Advanced</span><div class="lc-title">Technical indicators</div><p class="lc-desc">RSI, MACD, Bollinger Bands — the formulas and when to actually use them.</p><div class="lc-foot"><i class="fas fa-clock"></i>12 min</div></div>
+      <div class="learn-card fu fu-d2"><span class="lc-track track-a">Advanced</span><div class="lc-title">Fundamental analysis</div><p class="lc-desc">P/E, EPS, revenue growth, debt ratios — reading a stock table like a pro.</p><div class="lc-foot"><i class="fas fa-clock"></i>10 min</div></div>
+      <div class="learn-card fu fu-d3"><span class="lc-track track-a">Advanced</span><div class="lc-title">News & sentiment</div><p class="lc-desc">How headlines, earnings reports, and analyst ratings move stock prices.</p><div class="lc-foot"><i class="fas fa-clock"></i>9 min</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div class="s-inner">
+    <div class="cta-strip fu">
+      <div class="cta-text">
+        <h2>Ready to start trading?<br>Your $100K is waiting.</h2>
+        <p>Free, forever. No real money at risk. Trading is available during market hours (8:30 AM – 3:00 PM CST).</p>
+      </div>
+      <div class="cta-btns">
+        <a href="/practice" class="btn-primary"><i class="fas fa-rocket"></i>Open Practice Account</a>
+        <a href="/learn" class="btn-ghost">Learn first</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="nav-logo" style="display:inline-block;margin-bottom:4px;">Hedgex</span>
+        <p>A financial literacy platform built by a high school student to make investing education accessible to everyone.</p>
+      </div>
+      <div class="footer-col"><h4>Platform</h4><a href="/learn">Learn Trading</a><a href="/practice">Practice</a><a href="/simulator">Simulator</a><a href="/analysis">Analysis</a></div>
+      <div class="footer-col"><h4>About</h4><a href="/">Story</a><a href="/">Team</a></div>
+      <div class="footer-col"><h4>Contact</h4><a href="mailto:tanishchauhan4444@gmail.com">tanishchauhan4444@gmail.com</a><a href="https://github.com/TanishC4444/PCIS_FantasySMG" target="_blank">GitHub</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Hedgex Financial Literacy. All rights reserved.</span><span>Built by Tanish Chauhan — Prosper, TX</span></div>
+  </div>
+</footer>
+
+<script>
+// THEME
+const themeBtn = document.getElementById('themeBtn');
+const html = document.documentElement;
+const saved = localStorage.getItem('hx-theme');
+if(saved) html.setAttribute('data-theme', saved);
+else if(window.matchMedia('(prefers-color-scheme:light)').matches) html.setAttribute('data-theme','light');
+function applyTheme(){const t=html.getAttribute('data-theme');themeBtn.innerHTML=t==='dark'?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';}
+applyTheme();
+themeBtn.addEventListener('click',()=>{const t=html.getAttribute('data-theme')==='dark'?'light':'dark';html.setAttribute('data-theme',t);localStorage.setItem('hx-theme',t);applyTheme();loadPortfolioData();});
+document.getElementById('mobileBtn').addEventListener('click',()=>{document.getElementById('navLinks').classList.toggle('open');});
+
+// FADE-UP
+const obs = new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting) el.target.classList.add('in');});},{threshold:0.1});
+document.querySelectorAll('.fu').forEach(el=>obs.observe(el));
+
+// PORTFOLIO DATA
+async function loadPortfolioData(){
+  try {
+    const [balRes, holdingsRes] = await Promise.all([
+      fetch('/balance'),
+      fetch('/get_trades')
+    ]);
+    const balData = await balRes.json();
+    const holdings = await holdingsRes.json();
+
+    const cash = balData.balance ?? 100000;
+    let invested = 0, pnl = 0;
+
+    if(Array.isArray(holdings)){
+      holdings.forEach(h => {
+        invested += parseFloat(h['Current Value']) || 0;
+        pnl += parseFloat(h['Earnings']) || 0;
+      });
+      const count = holdings.length;
+      document.getElementById('heroPositions').textContent = count;
+      const pill = document.getElementById('heroPosPill');
+      pill.textContent = count === 0 ? 'No trades yet' : count === 1 ? '1 stock' : count + ' stocks';
+    }
+
+    const total = cash + invested;
+    const totalChange = total - 100000;
+
+    document.getElementById('heroCash').textContent =
+      '$' + cash.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+
+    document.getElementById('heroInvested').textContent =
+      '$' + invested.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+
+    document.getElementById('heroTotal').textContent =
+      '$' + total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+
+    // Total change label
+    const chgEl = document.getElementById('heroTotalChg');
+    if(totalChange === 0){
+      chgEl.textContent = 'No change yet';
+      chgEl.style.color = 'var(--text3)';
+    } else {
+      const chgPct = ((totalChange / 100000) * 100).toFixed(2);
+      const sign = totalChange >= 0 ? '+' : '-';
+      chgEl.textContent = sign + '$' + Math.abs(totalChange).toFixed(2) + ' (' + sign + Math.abs(chgPct) + '%) all time';
+      chgEl.style.color = totalChange >= 0 ? 'var(--green)' : 'var(--red)';
+    }
+
+    // P&L
+    const pnlEl = document.getElementById('heroPnl');
+    const sign = pnl >= 0 ? '+' : '-';
+    pnlEl.textContent = sign + '$' + Math.abs(pnl).toFixed(2);
+    pnlEl.style.color = pnl > 0 ? 'var(--green)' : pnl < 0 ? 'var(--red)' : 'var(--text3)';
+
+    document.getElementById('heroPnlSub').textContent =
+      pnl > 0 ? 'Unrealized gain' : pnl < 0 ? 'Unrealized loss' : 'No open positions';
+
+  } catch(e) {
+    // Backend not running — defaults already in the HTML
+  }
+}
+
+loadPortfolioData();
+setInterval(loadPortfolioData, 30000);
+</script>
+</body>
+</html>

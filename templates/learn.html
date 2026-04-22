@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn Trading — Hedgex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#080d14;--bg2:#0a1220;--card:#0f1923;--card2:#131f2e;--border:#1a2840;--border2:#1f3050;--primary:#60cfff;--primary-dim:rgba(96,207,255,0.10);--primary-glow:rgba(96,207,255,0.20);--violet:#7c3aed;--violet-dim:rgba(124,58,237,0.12);--green:#10b981;--green-dim:rgba(16,185,129,0.10);--red:#ef4444;--red-dim:rgba(239,68,68,0.10);--amber:#f59e0b;--amber-dim:rgba(245,158,11,0.10);--text:#ddeeff;--text2:#7a9fc0;--text3:#3d5a78;--heading:#eef6ff;--shadow:0 8px 40px rgba(0,0,0,0.6);--radius:14px;--nav-h:68px;--ease:cubic-bezier(0.4,0,0.2,1);}
+[data-theme="light"]{--bg:#f4f8ff;--bg2:#eaf2ff;--card:#ffffff;--card2:#f0f7ff;--border:#d0e4f5;--border2:#b8d4ec;--primary:#0284c7;--primary-dim:rgba(2,132,199,0.07);--primary-glow:rgba(2,132,199,0.18);--violet:#6d28d9;--violet-dim:rgba(109,40,217,0.08);--green:#059669;--green-dim:rgba(5,150,105,0.08);--red:#dc2626;--red-dim:rgba(220,38,38,0.07);--amber:#d97706;--amber-dim:rgba(217,119,6,0.08);--text:#1a3050;--text2:#3d6a96;--text3:#90b8d8;--heading:#0a1f38;--shadow:0 8px 40px rgba(0,60,120,0.08);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;transition:background 0.4s,color 0.4s;}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;color:var(--heading);line-height:1.2;}
+a{text-decoration:none;color:inherit;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px;}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--nav-h);display:flex;align-items:center;background:rgba(8,13,20,0.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+[data-theme="light"] .nav{background:rgba(244,248,255,0.88);}
+.nav-inner{width:100%;max-width:1240px;margin:0 auto;padding:0 28px;display:flex;align-items:center;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;background:linear-gradient(90deg,var(--primary),#b0eeff);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.02em;flex-shrink:0;}
+.nav-links{display:flex;gap:2px;margin-left:auto;}
+.nav-links a{padding:7px 13px;border-radius:8px;font-size:0.88rem;font-weight:500;color:var(--text2);transition:color 0.2s,background 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--primary);background:var(--primary-dim);}
+.nav-right{display:flex;align-items:center;gap:10px;margin-left:18px;}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.92rem;transition:border-color 0.2s,color 0.2s;}
+.theme-btn:hover{border-color:var(--primary);color:var(--primary);}
+.btn-cta{padding:8px 18px;border-radius:8px;background:var(--primary);color:#05101a;font-weight:600;font-size:0.86rem;border:none;cursor:pointer;transition:opacity 0.2s,transform 0.2s;}
+.btn-cta:hover{opacity:0.85;transform:translateY(-1px);}
+.mobile-btn{display:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;align-items:center;justify-content:center;}
+
+/* LAYOUT */
+.page-wrap{padding-top:var(--nav-h);min-height:100vh;display:flex;}
+.sidebar{width:268px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);padding:24px 0;position:fixed;top:var(--nav-h);bottom:0;overflow-y:auto;}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px;}
+.sb-section-title{font-family:'Syne',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;padding:0 18px 0 20px;}
+.sb-section{padding:8px 12px;margin-bottom:4px;}
+.sb-link{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;font-size:0.86rem;color:var(--text2);cursor:pointer;transition:color 0.2s,background 0.2s;border:none;background:transparent;width:100%;text-align:left;}
+.sb-link:hover{background:var(--primary-dim);color:var(--primary);}
+.sb-link.active{background:var(--primary-dim);color:var(--primary);font-weight:600;}
+.sb-link i{width:15px;text-align:center;flex-shrink:0;font-size:0.85rem;}
+.sb-badge{padding:2px 7px;border-radius:4px;font-size:0.68rem;font-weight:700;margin-left:auto;flex-shrink:0;}
+.badge-b{background:var(--green-dim);color:var(--green);}
+.badge-a{background:var(--violet-dim);color:var(--violet);}
+.sb-div{height:1px;background:var(--border);margin:10px 18px;}
+
+.main{margin-left:268px;flex:1;padding:52px 52px 100px;max-width:1000px;}
+
+/* TRACK SWITCHER */
+.track-sw{display:flex;gap:8px;margin-bottom:44px;width:fit-content;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:5px;}
+.track-btn{padding:9px 22px;border-radius:7px;border:none;background:transparent;font-family:'Syne',sans-serif;font-size:0.86rem;font-weight:700;cursor:pointer;transition:background 0.25s,color 0.25s;color:var(--text2);}
+.track-btn.tb-beg{background:var(--green);color:#fff;}
+.track-btn.tb-adv{background:var(--violet);color:#fff;}
+
+/* LESSON PANELS */
+.lesson{display:none;}
+.lesson.active{display:block;animation:fade-in 0.3s ease;}
+@keyframes fade-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* LESSON CONTENT */
+.lesson-header{margin-bottom:36px;}
+.l-track-badge{display:inline-block;padding:3px 11px;border-radius:6px;font-size:0.75rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px;}
+.lb-green{background:var(--green-dim);color:var(--green);}
+.lb-violet{background:var(--violet-dim);color:var(--violet);}
+.l-title{font-size:clamp(1.6rem,2.5vw,2.2rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:10px;}
+.l-meta{display:flex;align-items:center;gap:18px;font-size:0.8rem;color:var(--text3);}
+.l-meta i{color:var(--primary);}
+
+/* TEXT */
+.l-p{color:var(--text2);font-size:0.96rem;line-height:1.85;margin-bottom:18px;}
+.l-h3{font-size:1.15rem;font-weight:700;margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.l-h4{font-size:1rem;font-weight:700;margin:24px 0 8px;color:var(--text);}
+.l-p strong{color:var(--text);}
+.l-p em{color:var(--text3);font-style:italic;}
+
+/* CALLOUT BOXES */
+.callout{border-radius:var(--radius);padding:20px 22px;margin:22px 0;position:relative;}
+.callout-label{font-size:0.73rem;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;margin-bottom:6px;}
+.callout-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:8px;}
+.callout-text{font-size:0.88rem;color:var(--text2);line-height:1.75;}
+.callout-text strong{color:var(--text);}
+.call-blue{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--primary);}.call-blue .callout-label{color:var(--primary);}
+.call-green{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--green);}.call-green .callout-label{color:var(--green);}
+.call-violet{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--violet);}.call-violet .callout-label{color:var(--violet);}
+.call-amber{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--amber);}.call-amber .callout-label{color:var(--amber);}
+.call-red{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);}.call-red .callout-label{color:var(--red);}
+
+/* FORMULA BOX */
+.formula-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin:18px 0;font-family:'DM Sans',sans-serif;}
+.formula-label{font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.formula-text{font-size:1.05rem;font-weight:600;color:var(--primary);letter-spacing:0.02em;}
+.formula-explain{font-size:0.84rem;color:var(--text2);margin-top:8px;line-height:1.65;}
+
+/* DEFINITION GRID */
+.def-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0;}
+.def-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.def-term{font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;margin-bottom:5px;color:var(--primary);}
+.def-text{font-size:0.84rem;color:var(--text2);line-height:1.65;}
+
+/* CHART CARD */
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin:24px 0;}
+.chart-card-title{font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;color:var(--text2);margin-bottom:16px;}
+.chart-h-lg{height:260px;}
+.chart-h-md{height:190px;}
+.chart-h-sm{height:140px;}
+.chart-caption{font-size:0.78rem;color:var(--text3);margin-top:10px;font-style:italic;}
+
+/* TABLE */
+.l-table-wrap{overflow-x:auto;margin:20px 0;border-radius:var(--radius);border:1px solid var(--border);}
+.l-table{width:100%;border-collapse:collapse;font-size:0.86rem;}
+.l-table thead{background:var(--card2);}
+.l-table th{padding:11px 16px;text-align:left;font-family:'Syne',sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);white-space:nowrap;}
+.l-table td{padding:12px 16px;border-top:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.6;}
+.l-table tr:hover td{background:var(--card2);}
+.l-table .up{color:var(--green);}
+.l-table .dn{color:var(--red);}
+.pill{display:inline-block;padding:2px 8px;border-radius:5px;font-size:0.76rem;font-weight:600;}
+.p-green{background:var(--green-dim);color:var(--green);}
+.p-red{background:var(--red-dim);color:var(--red);}
+.p-blue{background:var(--primary-dim);color:var(--primary);}
+.p-violet{background:var(--violet-dim);color:var(--violet);}
+.p-amber{background:var(--amber-dim);color:var(--amber);}
+
+/* CANDLE VISUAL */
+.candle-viz{display:flex;gap:24px;padding:20px 24px;background:var(--card2);border-radius:12px;margin:18px 0;flex-wrap:wrap;align-items:flex-start;}
+.cv-candles{display:flex;gap:18px;align-items:flex-end;}
+.cv-c{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.cv-wick{width:2px;border-radius:1px;}
+.cv-body{width:14px;border-radius:2px;}
+.c-bull{color:var(--green);}
+.c-bear{color:var(--red);}
+.cv-key{flex:1;min-width:220px;}
+.cv-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;font-size:0.83rem;color:var(--text2);}
+.cv-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;margin-top:3px;}
+
+/* EXAMPLE BOX */
+.example-box{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:20px 22px;margin:18px 0;}
+.ex-label{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+.ex-text{font-size:0.9rem;color:var(--text2);line-height:1.75;}
+.ex-text strong{color:var(--text);}
+
+/* RR VISUAL */
+.rr-row{display:flex;gap:12px;margin:18px 0;align-items:center;}
+.rr-box{flex:1;padding:18px;border-radius:12px;text-align:center;}
+.rr-risk{background:var(--red-dim);border:1px solid rgba(239,68,68,0.2);}
+.rr-reward{background:var(--green-dim);border:1px solid rgba(16,185,129,0.2);}
+.rr-lbl{font-size:0.73rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;}
+.rr-risk .rr-lbl{color:var(--red);}
+.rr-reward .rr-lbl{color:var(--green);}
+.rr-num{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;}
+.rr-risk .rr-num{color:var(--red);}
+.rr-reward .rr-num{color:var(--green);}
+.rr-sub{font-size:0.78rem;color:var(--text3);margin-top:4px;}
+.rr-sep{font-family:'Syne',sans-serif;font-size:1.2rem;color:var(--text3);flex-shrink:0;}
+
+/* INDICATOR CARDS */
+.ind-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0;}
+.ind-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.ind-name{font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;margin-bottom:3px;}
+.ind-type{font-size:0.72rem;color:var(--text3);margin-bottom:8px;}
+.ind-bar{height:4px;border-radius:999px;background:var(--border);margin-top:10px;overflow:hidden;}
+.ind-fill{height:100%;border-radius:999px;}
+.ind-sig{font-size:0.8rem;color:var(--text2);line-height:1.55;}
+
+/* BIAS GRID */
+.bias-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+.bias-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;border-top:3px solid;}
+.bc-fear{border-top-color:var(--red);}
+.bc-greed{border-top-color:var(--amber);}
+.bc-confirm{border-top-color:var(--violet);}
+.bc-loss{border-top-color:var(--primary);}
+.bias-type{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;}
+.bt-fear{color:var(--red);}
+.bt-greed{color:var(--amber);}
+.bt-confirm{color:var(--violet);}
+.bt-loss{color:var(--primary);}
+.bias-name{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;margin-bottom:6px;}
+.bias-desc{font-size:0.83rem;color:var(--text2);line-height:1.65;}
+.bias-ex{font-size:0.78rem;color:var(--text3);font-style:italic;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+
+/* SENTIMENT VISUAL */
+.sentiment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0;}
+.sentiment-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
+.sc-icon{font-size:1.4rem;margin-bottom:8px;}
+.sc-label{font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;margin-bottom:4px;}
+.sc-desc{font-size:0.78rem;color:var(--text2);line-height:1.5;}
+
+/* RESOURCES */
+.resource-list{display:flex;flex-direction:column;gap:10px;margin:18px 0;}
+.resource-item{display:flex;align-items:flex-start;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color 0.2s;}
+.resource-item:hover{border-color:var(--primary);}
+.ri-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;flex-shrink:0;}
+.ri-title{font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;margin-bottom:3px;}
+.ri-desc{font-size:0.81rem;color:var(--text2);}
+.ri-link{font-size:0.78rem;color:var(--primary);margin-top:4px;display:inline-flex;align-items:center;gap:5px;}
+.ri-link:hover{text-decoration:underline;}
+.fi-blue{background:var(--primary-dim);color:var(--primary);}
+.fi-violet{background:var(--violet-dim);color:var(--violet);}
+.fi-green{background:var(--green-dim);color:var(--green);}
+.fi-amber{background:var(--amber-dim);color:var(--amber);}
+
+/* QUIZ */
+.quiz-box{background:var(--card);border:1px solid var(--border2);border-radius:var(--radius);padding:24px;margin-top:36px;}
+.quiz-q{font-family:'Syne',sans-serif;font-size:0.97rem;font-weight:700;margin-bottom:14px;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;}
+.quiz-opt{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card2);cursor:pointer;font-size:0.88rem;color:var(--text2);transition:border-color 0.2s,color 0.2s,background 0.2s;}
+.quiz-opt:hover{border-color:var(--primary);color:var(--primary);}
+.quiz-opt.correct{border-color:var(--green);background:var(--green-dim);color:var(--green);}
+.quiz-opt.wrong{border-color:var(--red);background:var(--red-dim);color:var(--red);}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:700;flex-shrink:0;}
+.quiz-result{display:none;margin-top:12px;padding:11px 14px;border-radius:8px;font-size:0.87rem;font-weight:500;}
+.quiz-result.show{display:block;}
+.qr-ok{background:var(--green-dim);color:var(--green);border:1px solid rgba(16,185,129,0.2);}
+.qr-bad{background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,0.2);}
+.quiz-reset{margin-top:8px;padding:7px 14px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:0.82rem;transition:border-color 0.2s,color 0.2s;}
+.quiz-reset:hover{border-color:var(--primary);color:var(--primary);}
+
+/* NEXT BTN */
+.next-btn{display:inline-flex;align-items:center;gap:10px;margin-top:44px;padding:13px 24px;border-radius:10px;background:var(--primary);color:#05101a;font-weight:600;font-size:0.92rem;border:none;cursor:pointer;transition:transform 0.3s var(--ease),box-shadow 0.3s;}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px var(--primary-glow);}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:10px;background:transparent;color:var(--text);font-weight:500;font-size:0.92rem;border:1px solid var(--border2);cursor:pointer;transition:border-color 0.2s,color 0.2s,background 0.2s;}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-dim);}
+
+/* FOOTER */
+.footer{background:var(--bg2);border-top:1px solid var(--border);padding:36px 0 20px;margin-left:268px;}
+.footer-inner{max-width:1240px;margin:0 auto;padding:0 52px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;font-size:0.8rem;color:var(--text3);}
+.footer-inner a{color:var(--text2);transition:color 0.2s;}
+.footer-inner a:hover{color:var(--primary);}
+
+@media(max-width:1024px){.sidebar{display:none;}.main{margin-left:0;}.footer{margin-left:0;}}
+@media(max-width:768px){.nav-links{display:none;}.nav-links.open{display:flex;flex-direction:column;position:fixed;top:var(--nav-h);left:0;right:0;background:var(--card);border-bottom:1px solid var(--border);padding:16px 24px;gap:4px;z-index:899;}.mobile-btn{display:flex;}.main{padding:32px 20px 60px;}.def-grid,.bias-grid,.ind-3,.sentiment-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Hedgex</a>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Home</a><a href="/learn" class="active">Learn</a><a href="/practice">Practice</a><a href="/simulator">Simulator</a><a href="/analysis">Analysis</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-btn" id="themeBtn"><i class="fas fa-moon"></i></button>
+      <a href="/practice" class="btn-cta">Start Trading</a>
+      <button class="mobile-btn" id="mobileBtn"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sb-section">
+      <div class="sb-section-title">Beginner Track</div>
+      <button class="sb-link active" data-lesson="stocks"><i class="fas fa-dot-circle"></i>What is a Stock?<span class="sb-badge badge-b">B</span></button>
+      <button class="sb-link" data-lesson="charts"><i class="fas fa-chart-bar"></i>Reading Charts<span class="sb-badge badge-b">B</span></button>
+      <button class="sb-link" data-lesson="risk"><i class="fas fa-balance-scale"></i>Risk & Reward<span class="sb-badge badge-b">B</span></button>
+      <button class="sb-link" data-lesson="orders"><i class="fas fa-arrows-left-right"></i>Order Types<span class="sb-badge badge-b">B</span></button>
+      <button class="sb-link" data-lesson="yahoo"><i class="fas fa-table"></i>Reading Stock Tables<span class="sb-badge badge-b">B</span></button>
+    </div>
+    <div class="sb-div"></div>
+    <div class="sb-section">
+      <div class="sb-section-title">Advanced Track</div>
+      <button class="sb-link" data-lesson="indicators"><i class="fas fa-chart-line"></i>Technical Indicators<span class="sb-badge badge-a">A</span></button>
+      <button class="sb-link" data-lesson="fundamental"><i class="fas fa-university"></i>Fundamental Analysis<span class="sb-badge badge-a">A</span></button>
+      <button class="sb-link" data-lesson="sentiment"><i class="fas fa-newspaper"></i>News & Sentiment<span class="sb-badge badge-a">A</span></button>
+      <button class="sb-link" data-lesson="strategies"><i class="fas fa-brain"></i>Trading Strategies<span class="sb-badge badge-a">A</span></button>
+      <button class="sb-link" data-lesson="psychology"><i class="fas fa-brain"></i>Trading Psychology<span class="sb-badge badge-a">A</span></button>
+    </div>
+    <div class="sb-div"></div>
+    <div class="sb-section">
+      <div class="sb-section-title">Resources</div>
+      <button class="sb-link" data-lesson="resources"><i class="fas fa-link"></i>Links & Reading</button>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="track-sw">
+      <button class="track-btn tb-beg" id="tbBeg" onclick="switchTrack('beg')">Beginner Track</button>
+      <button class="track-btn" id="tbAdv" onclick="switchTrack('adv')">Advanced Track</button>
+    </div>
+
+    <!-- ======== WHAT IS A STOCK ======== -->
+    <div class="lesson active" id="lesson-stocks">
+      <div class="lesson-header">
+        <span class="l-track-badge lb-green">Beginner</span>
+        <h1 class="l-title">What is a Stock?</h1>
+        <div class="l-meta"><span><i class="fas fa-clock"></i> 5 min</span><span><i class="fas fa-chart-bar"></i> Charts</span></div>
+      </div>
+
+      <p class="l-p">When a company wants to raise money to grow, it can sell small pieces of ownership to the public. Each piece is called a <strong>share</strong>. The collection of all shares is called <strong>stock</strong>. When you buy one share of Apple (AAPL), you literally own a tiny fraction of Apple Inc.</p>
+
+      <div class="callout call-blue">
+        <div class="callout-label">Definition</div>
+        <div class="callout-title">Stock</div>
+        <p class="callout-text">A type of security that represents fractional ownership of a corporation. Owning stock entitles you to a claim on the company's assets and earnings proportional to your share count.</p>
+      </div>
+
+      <h3 class="l-h3">Key Terms You Need</h3>
+      <div class="def-grid">
+        <div class="def-card"><div class="def-term">Share</div><p class="def-text">One unit of ownership in a company. If a company has 1,000 shares and you own 10, you own 1% of it.</p></div>
+        <div class="def-card"><div class="def-term">Market Cap</div><p class="def-text">Total value of all shares. Formula: <strong>Share Price × Shares Outstanding</strong>. Apple's market cap is over $2 trillion.</p></div>
+        <div class="def-card"><div class="def-term">Shares Outstanding</div><p class="def-text">Total number of shares a company has issued to all investors, including insiders and public investors.</p></div>
+        <div class="def-card"><div class="def-term">Dividend</div><p class="def-text">A cash payment a company makes to shareholders, usually quarterly. Not all companies pay dividends.</p></div>
+        <div class="def-card"><div class="def-term">Ticker Symbol</div><p class="def-text">A short code used to identify a stock on an exchange. AAPL = Apple, TSLA = Tesla, NVDA = NVIDIA.</p></div>
+        <div class="def-card"><div class="def-term">IPO</div><p class="def-text">Initial Public Offering — the first time a company sells shares to the public. This is how a company "goes public."</p></div>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-label">Formula</div>
+        <div class="formula-text">Market Cap = Share Price × Shares Outstanding</div>
+        <div class="formula-explain">Example: Apple stock at $189 × 15.4 billion shares = ~$2.9 trillion market cap. This is why Apple is called a "mega-cap" company.</div>
+      </div>
+
+      <h3 class="l-h3">Why do stock prices move?</h3>
+      <p class="l-p">Prices move because of <strong>supply and demand</strong>. If more people want to buy a stock than sell it, the price rises. If more people want to sell, it falls. What drives those decisions? Earnings reports, economic data, news, and market sentiment.</p>
+
+      <div class="chart-card">
+        <div class="chart-card-title">Supply vs. Demand — how buying pressure pushes prices up</div>
+        <div class="chart-h-md"><canvas id="chart-supply"></canvas></div>
+        <p class="chart-caption">Each upward wave represents a period where buyers outnumbered sellers. Downward waves show selling pressure exceeding demand.</p>
+      </div>
+
+      <h3 class="l-h3">Types of Stock</h3>
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Type</th><th>Voting Rights</th><th>Dividends</th><th>Best For</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Common Stock</strong></td><td>Yes (1 vote/share)</td><td>Variable, not guaranteed</td><td>Most retail investors</td><td>AAPL, TSLA, NVDA</td></tr>
+            <tr><td><strong>Preferred Stock</strong></td><td>Usually no</td><td>Fixed, paid before common</td><td>Income-focused investors</td><td>Bank preferred shares</td></tr>
+            <tr><td><strong>ETF</strong></td><td>No</td><td>Pass-through distributions</td><td>Diversification with one buy</td><td>SPY, QQQ, VTI</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">Real-world example</div>
+        <p class="ex-text">Imagine a pizza shop worth $1,000,000 that divides itself into 100,000 shares. Each share is worth $10. If you buy 100 shares for $1,000, you own <strong>0.1% of the business</strong>. If the shop becomes worth $2,000,000, your 100 shares are now worth $2,000 — a 100% gain. This is the same mechanic behind every stock trade.</p>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-q">A company has 5,000,000 shares outstanding and its stock price is $20. What is its market cap?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>$500,000</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">B</span>$10,000,000</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">C</span>$100,000,000</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>$1,000,000,000</div>
+        </div>
+        <div class="quiz-result qr-ok" id="qr-stocks-ok">Correct! 5,000,000 × $20 = $100,000,000. This is a $100M "small-cap" company.</div>
+        <div class="quiz-result qr-bad" id="qr-stocks-bad">Not quite. Market Cap = Share Price × Shares Outstanding. 5,000,000 × $20 = $100,000,000.</div>
+        <button class="quiz-reset" onclick="resetQ('stocks')">Reset</button>
+      </div>
+      <button class="next-btn" onclick="loadLesson('charts')">Next: Reading Charts <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- ======== READING CHARTS ======== -->
+    <div class="lesson" id="lesson-charts">
+      <div class="lesson-header">
+        <span class="l-track-badge lb-green">Beginner</span>
+        <h1 class="l-title">Reading a Stock Chart</h1>
+        <div class="l-meta"><span><i class="fas fa-clock"></i> 8 min</span><span><i class="fas fa-chart-line"></i> Charts + patterns</span><span><i class="fas fa-circle-question"></i> 3 quizzes</span></div>
+      </div>
+      <p class="l-p">A stock chart is a visual record of a stock's price over time. Understanding how to read one is the single most important skill in trading. The most widely used format is the <strong>candlestick chart</strong>.</p>
+
+      <h3 class="l-h3">Anatomy of a Candlestick</h3>
+      <p class="l-p">Each candle represents one time period (1 day, 1 hour, etc.) and contains four key data points:</p>
+      <div class="def-grid">
+        <div class="def-card"><div class="def-term">Open</div><p class="def-text">The price at the <strong>start</strong> of the time period. This is one edge of the candle body.</p></div>
+        <div class="def-card"><div class="def-term">Close</div><p class="def-text">The price at the <strong>end</strong> of the period. This is the other edge of the body. If Close > Open, it's a green (bullish) candle.</p></div>
+        <div class="def-card"><div class="def-term">High</div><p class="def-text">The highest price traded during the period. Shown as the top wick (also called shadow).</p></div>
+        <div class="def-card"><div class="def-term">Low</div><p class="def-text">The lowest price traded during the period. Shown as the bottom wick.</p></div>
+      </div>
+
+      <div class="candle-viz">
+        <div class="cv-candles">
+          <div class="cv-c c-bull">
+            <div class="cv-wick" style="height:28px;background:var(--green);"></div>
+            <div class="cv-body" style="height:52px;background:var(--green);"></div>
+            <div class="cv-wick" style="height:16px;background:var(--green);"></div>
+            <div style="font-size:0.7rem;color:var(--green);margin-top:6px;text-align:center;">Bullish</div>
+          </div>
+          <div class="cv-c c-bear">
+            <div class="cv-wick" style="height:20px;background:var(--red);"></div>
+            <div class="cv-body" style="height:44px;background:var(--red);"></div>
+            <div class="cv-wick" style="height:32px;background:var(--red);"></div>
+            <div style="font-size:0.7rem;color:var(--red);margin-top:6px;text-align:center;">Bearish</div>
+          </div>
+        </div>
+        <div class="cv-key">
+          <div class="cv-row"><div class="cv-dot" style="background:var(--text2);height:2px;margin-top:7px;"></div><span><strong>Top wick:</strong> Highest price traded in the period</span></div>
+          <div class="cv-row"><div class="cv-dot" style="background:var(--green);"></div><span><strong>Green body:</strong> Price closed higher than open — bullish candle</span></div>
+          <div class="cv-row"><div class="cv-dot" style="background:var(--red);"></div><span><strong>Red body:</strong> Price closed lower than open — bearish candle</span></div>
+          <div class="cv-row"><div class="cv-dot" style="background:var(--text2);height:2px;margin-top:7px;"></div><span><strong>Bottom wick:</strong> Lowest price traded in the period</span></div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-title">30-Day Price Chart with Moving Average</div>
+        <div class="chart-h-lg"><canvas id="chart-price"></canvas></div>
+        <p class="chart-caption">Green bars = bullish days, red bars = bearish days. The blue line is a 10-day moving average, smoothing out short-term noise to show the trend direction.</p>
+      </div>
+
+      <h3 class="l-h3">Essential Chart Concepts</h3>
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Concept</th><th>Definition</th><th>What to look for</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Uptrend</strong></td><td>Series of higher highs and higher lows</td><td>Look for pullbacks to the trend as buy opportunities</td></tr>
+            <tr><td><strong>Downtrend</strong></td><td>Series of lower highs and lower lows</td><td>Risky to buy; wait for reversal signals</td></tr>
+            <tr><td><strong>Support</strong></td><td>A price floor where buyers repeatedly step in</td><td>Watch for a bounce off support as a buy signal</td></tr>
+            <tr><td><strong>Resistance</strong></td><td>A price ceiling where sellers repeatedly appear</td><td>Watch for rejection or breakout above resistance</td></tr>
+            <tr><td><strong>Moving Average</strong></td><td>Average of the last N closing prices</td><td>Price above MA = bullish; below = bearish</td></tr>
+            <tr><td><strong>Volume</strong></td><td>Number of shares traded in a period</td><td>High volume on a breakout confirms the move</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-label">Formula — Simple Moving Average (SMA)</div>
+        <div class="formula-text">SMA(N) = (P₁ + P₂ + ... + Pₙ) ÷ N</div>
+        <div class="formula-explain">Example: The 20-day SMA = sum of the last 20 closing prices divided by 20. It removes day-to-day noise and shows the average price trend over that window.</div>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">Pattern example — Support bounce</div>
+        <p class="ex-text">A stock trades between $45 and $55 for several weeks. Every time it drops to $45, buyers come in and push it back up. That $45 level is <strong>strong support</strong>. A trader might buy near $45 with a stop-loss at $43, targeting $52 — a risk of $2 to make $7 (1:3.5 risk/reward).</p>
+      </div>
+
+      <h3 class="l-h3">Common Candlestick Patterns</h3>
+      <p class="l-p">Certain candlestick shapes repeat across markets and carry predictive meaning. These are the ones every trader recognizes:</p>
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Pattern</th><th>Shape</th><th>Signal</th><th>What it means</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Doji</strong></td><td>Tiny body, long wicks both sides</td><td><span class="pill p-amber">Neutral</span></td><td>Open ≈ Close — indecision between buyers and sellers</td></tr>
+            <tr><td><strong>Hammer</strong></td><td>Small body at top, long lower wick</td><td><span class="pill p-green">Bullish</span></td><td>Sellers pushed price down hard but buyers recovered it — potential reversal up</td></tr>
+            <tr><td><strong>Shooting Star</strong></td><td>Small body at bottom, long upper wick</td><td><span class="pill p-red">Bearish</span></td><td>Buyers pushed price up but sellers took it back — potential reversal down</td></tr>
+            <tr><td><strong>Engulfing (Bull)</strong></td><td>Green candle covers entire prior red candle</td><td><span class="pill p-green">Bullish</span></td><td>Buyers completely overwhelmed previous sellers — strong reversal signal</td></tr>
+            <tr><td><strong>Engulfing (Bear)</strong></td><td>Red candle covers entire prior green candle</td><td><span class="pill p-red">Bearish</span></td><td>Sellers overwhelmed buyers — strong reversal down signal</td></tr>
+            <tr><td><strong>Marubozu</strong></td><td>Full body, no wicks</td><td><span class="pill p-blue">Strong trend</span></td><td>Price opened at one extreme and closed at the other — full momentum, no hesitation</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout call-amber">
+        <div class="callout-label">Important nuance</div>
+        <div class="callout-title">Context matters more than the candle shape.</div>
+        <p class="callout-text">A hammer at the bottom of a downtrend is a strong reversal signal. The same hammer in the middle of an uptrend means very little. Always read candles in the context of the surrounding trend, support/resistance, and volume.</p>
+      </div>
+
+      <h3 class="l-h3">Reading Volume</h3>
+      <p class="l-p">Volume is the number of shares traded in a period. It's the <strong>conviction meter</strong> behind every price move. A price move with high volume is real. The same move with low volume may be a fake-out.</p>
+      <div class="def-grid">
+        <div class="def-card"><div class="def-term">High Volume Breakout</div><p class="def-text">Price breaks above resistance with 2× or more the average volume. This is the most reliable breakout signal — institutions are participating.</p></div>
+        <div class="def-card"><div class="def-term">Low Volume Rally</div><p class="def-text">Price rises but volume is weak. This suggests retail-driven buying without institutional confirmation. Treat with suspicion.</p></div>
+        <div class="def-card"><div class="def-term">Volume Climax</div><p class="def-text">Extremely high volume after a prolonged move often signals exhaustion — the last buyers have bought. Can mark a top or bottom.</p></div>
+        <div class="def-card"><div class="def-term">Declining Volume in Trend</div><p class="def-text">An uptrend with progressively falling volume suggests the move is losing steam. Watch for a trend reversal.</p></div>
+      </div>
+
+      <!-- QUIZ 1 -->
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz 1: A green candlestick has its body top at $52 and body bottom at $48, with a wick reaching to $54 at the top. What was the closing price?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>$48 — the bottom of the body</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">B</span>$52 — the top of the body (green = close is higher)</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">C</span>$54 — the top of the wick</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>$50 — the midpoint</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! On a green (bullish) candle, the top of the body = Close and the bottom = Open. The wick shows the high, not the close.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. On a green candle: body bottom = Open, body top = Close. Wicks show the High/Low extremes, not open/close.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('B'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <!-- QUIZ 2 -->
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz 2: A stock breaks above a resistance level that held for 3 months. Volume on the breakout day is 3× the 30-day average. What does this suggest?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>The breakout is probably a fake-out — high volume is suspicious</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">B</span>The breakout is likely genuine — high volume confirms institutional participation</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">C</span>Volume is irrelevant to evaluating a breakout</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>It means the stock will definitely continue higher</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! High volume on a breakout = strong institutional buying = the move has conviction. No signal is guaranteed, but high-volume breakouts of multi-month resistance are among the most reliable setups.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. High volume on a breakout is a bullish confirmation, not a red flag. It means large institutions are participating, which gives the move much more credibility.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('B'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <!-- QUIZ 3 -->
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz 3: The 20-day SMA of a stock is $100. The stock's last 20 closing prices sum to $2,200. What's wrong with this scenario?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>Nothing — the SMA is calculated correctly</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">B</span>The math is wrong: $2,200 ÷ 20 = $110, not $100</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">C</span>The SMA formula uses multiplication, not division</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>You need 50 data points minimum for an SMA</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! SMA(20) = sum of 20 closes ÷ 20. $2,200 ÷ 20 = $110. The stated $100 SMA is mathematically inconsistent with those price inputs.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. Apply the formula: SMA = $2,200 ÷ 20 = $110. The stated SMA of $100 doesn't match the data — the math is wrong.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('B'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+      <button class="next-btn" onclick="loadLesson('risk')">Next: Risk & Reward <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- ======== RISK & REWARD ======== -->
+    <div class="lesson" id="lesson-risk">
+      <div class="lesson-header">
+        <span class="l-track-badge lb-green">Beginner</span>
+        <h1 class="l-title">Risk & Reward</h1>
+        <div class="l-meta"><span><i class="fas fa-clock"></i> 6 min</span><span><i class="fas fa-balance-scale"></i> Formulas</span></div>
+      </div>
+      <p class="l-p">Every trade has a risk-to-reward ratio. This is the most important concept for staying in the game long term. Most new traders focus on <em>whether they're right</em>. Professional traders focus on <em>how much they make when right vs. how much they lose when wrong.</em></p>
+
+      <div class="callout call-blue">
+        <div class="callout-label">Definition</div>
+        <div class="callout-title">Risk-to-Reward Ratio (R:R)</div>
+        <p class="callout-text">The ratio of potential loss (risk) to potential gain (reward) on a trade. A 1:3 ratio means you risk $1 to potentially make $3.</p>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-label">Formula</div>
+        <div class="formula-text">R:R = (Entry Price − Stop Loss) : (Target Price − Entry Price)</div>
+        <div class="formula-explain">Example: Buy at $50, stop-loss at $47, target $59. Risk = $3. Reward = $9. R:R = 1:3.</div>
+      </div>
+
+      <div class="rr-row">
+        <div class="rr-box rr-risk"><div class="rr-lbl">Risk (Stop Loss)</div><div class="rr-num">-$100</div><div class="rr-sub">Max you lose if wrong</div></div>
+        <div class="rr-sep">:</div>
+        <div class="rr-box rr-reward"><div class="rr-lbl">Reward (Target)</div><div class="rr-num">+$300</div><div class="rr-sub">Gain if you're right</div></div>
+      </div>
+
+      <div class="callout call-green">
+        <div class="callout-label">The Math</div>
+        <div class="callout-title">Why 1:3 is so powerful</div>
+        <p class="callout-text">With a 1:3 ratio, you only need to be right <strong>25% of the time to break even</strong>. At 50% accuracy, you're very profitable. Most beginners trade 1:1 or worse — which requires winning over 60% of trades just to not lose money.</p>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-title">Win rate needed to break even at each R:R ratio</div>
+        <div class="chart-h-md"><canvas id="chart-rr"></canvas></div>
+        <p class="chart-caption">The better your risk/reward ratio, the less often you need to be right. Professional traders optimize R:R before worrying about win rate.</p>
+      </div>
+
+      <h3 class="l-h3">Position Sizing</h3>
+      <p class="l-p">Position sizing determines how many shares to buy so you never risk too much of your account on one trade.</p>
+
+      <div class="formula-box">
+        <div class="formula-label">Formula — Position Size</div>
+        <div class="formula-text">Shares = (Account × Risk %) ÷ (Entry Price − Stop Price)</div>
+        <div class="formula-explain">Example: $100,000 account, 1% risk, entry at $50, stop at $47. Dollar risk = $1,000. Distance to stop = $3. Shares = 1,000 ÷ 3 = <strong>333 shares</strong>.</div>
+      </div>
+
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Account</th><th>Risk Per Trade (1%)</th><th>Entry: $50</th><th>Stop: $47</th><th>Max Shares</th></tr></thead>
+          <tbody>
+            <tr><td>$100,000</td><td>$1,000</td><td>$50</td><td>$47</td><td>333 shares</td></tr>
+            <tr><td>$100,000</td><td>$2,000</td><td>$50</td><td>$47</td><td>666 shares</td></tr>
+            <tr><td>$50,000</td><td>$500</td><td>$50</td><td>$47</td><td>166 shares</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">Worked example</div>
+        <p class="ex-text">You have $100,000 in your Hedgex account. You want to buy AAPL at $189, with a stop at $185, targeting $201. Risk per share = <strong>$4</strong>. Reward per share = <strong>$12</strong>. R:R = 1:3. Max 1% risk = <strong>$1,000 ÷ $4 = 250 shares</strong>. Total position = $47,250 — less than 50% of your account.</p>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz 1: A trader has a $50,000 account and wants to risk 2% per trade. Their entry is $80, stop-loss is $75. How many shares can they buy?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>250 shares ($50,000 × 2% ÷ $80)</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">B</span>200 shares ($50,000 × 2% = $1,000 risk ÷ $5 stop distance)</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">C</span>125 shares ($50,000 × 2% ÷ $8)</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>1,000 shares ($50,000 ÷ $50)</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! Dollar risk = $50,000 × 2% = $1,000. Stop distance = $80 − $75 = $5. Shares = $1,000 ÷ $5 = 200 shares. Total position = $16,000, well within account limits.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. Step 1: Dollar risk = $50,000 × 2% = $1,000. Step 2: Stop distance = $80 − $75 = $5. Step 3: Shares = $1,000 ÷ $5 = 200 shares.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('B'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz 2: With a 1:4 risk-to-reward ratio, what is the minimum win rate needed to be profitable over many trades?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>50% — you always need to be right more than wrong</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">B</span>33% — you need to win 1 in 3 trades</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">C</span>20% — at 1:4, winning 1 in 5 trades breaks even</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>40% — the standard minimum for all strategies</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! Break-even win rate = 1 ÷ (1 + reward ratio) = 1 ÷ 5 = 20%. At 1:4, you win $4 for every $1 risked, so you only need 1 win per 5 trades to break even. This is the mathematical power of a high R:R ratio.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. Break-even win rate = 1 ÷ (1 + reward ratio). At 1:4 that's 1 ÷ 5 = 20%. You can be wrong 80% of the time and still break even — as long as your winners are 4× your losers.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('C'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <button class="next-btn" onclick="loadLesson('orders')">Next: Order Types <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- ======== ORDER TYPES ======== -->
+    <div class="lesson" id="lesson-orders">
+      <div class="lesson-header">
+        <span class="l-track-badge lb-green">Beginner</span>
+        <h1 class="l-title">Order Types</h1>
+        <div class="l-meta"><span><i class="fas fa-clock"></i> 5 min</span><span><i class="fas fa-arrows-left-right"></i> Definitions</span></div>
+      </div>
+      <p class="l-p">Placing the wrong type of order can cost you money even when your trade idea is right. Here are the four order types you need to know — and when Hedgex accepts them.</p>
+
+      <div class="callout call-amber">
+        <div class="callout-label">Important</div>
+        <div class="callout-title">Hedgex uses market orders during trading hours.</div>
+        <p class="callout-text">The Flask backend executes trades at the live Yahoo Finance price at the time you submit. Trading is only available <strong>Monday–Friday, 8:30 AM – 3:00 PM CST</strong>.</p>
+      </div>
+
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Order Type</th><th>How it works</th><th>Best For</th><th>Risk</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Market Order</strong></td><td>Fills immediately at the current best price</td><td>Fast entry/exit on liquid stocks</td><td><span class="pill p-red">Slippage in volatile markets</span></td></tr>
+            <tr><td><strong>Limit Order</strong></td><td>Only fills at your specified price or better</td><td>Precise entries, illiquid stocks</td><td><span class="pill p-amber">May not fill at all</span></td></tr>
+            <tr><td><strong>Stop-Loss</strong></td><td>Triggers a sell when price drops to your level</td><td>Protecting against large losses</td><td><span class="pill p-violet">Gap risk — can fill below stop</span></td></tr>
+            <tr><td><strong>Stop-Limit</strong></td><td>Like a stop, but only fills at limit price or better</td><td>Controlling slippage on stop exits</td><td><span class="pill p-red">May not fill if price gaps</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="def-grid">
+        <div class="def-card"><div class="def-term">Slippage</div><p class="def-text">The difference between the expected fill price and the actual fill price. More common in fast markets and with market orders on low-volume stocks.</p></div>
+        <div class="def-card"><div class="def-term">Fill</div><p class="def-text">When your order is matched with a counterparty and executed. "Getting filled" means your trade went through.</p></div>
+        <div class="def-card"><div class="def-term">Bid/Ask Spread</div><p class="def-text">The difference between the highest price a buyer will pay (bid) and the lowest price a seller will accept (ask). Wider spread = higher trading cost.</p></div>
+        <div class="def-card"><div class="def-term">FIFO</div><p class="def-text">First In, First Out — Hedgex sells your oldest shares first when you close a position. This is the standard accounting method.</p></div>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz: You want to buy TSLA at exactly $245.00 but the current price is $248. Which order type is correct?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>Market order — fills immediately at the best available price</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">B</span>Limit order at $245 — only fills if price drops to your level</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">C</span>Stop-loss at $245 — triggers when price falls to $245</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>Stop-limit at $248 — protects against further upside</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! A buy limit order at $245 sits in the order book waiting. If TSLA drops to $245, your order fills. If it never reaches $245, you don't buy — which is fine. You controlled your entry price instead of chasing.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. A limit buy order at $245 will only execute if the price drops to $245 or below. A market order would fill immediately at $248 — paying more than you wanted. A stop-loss at $245 would trigger a sell, not a buy.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('B'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <button class="next-btn" onclick="loadLesson('yahoo')">Next: Reading Stock Tables <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- ======== READING STOCK TABLES ======== -->
+    <div class="lesson" id="lesson-yahoo">
+      <div class="lesson-header">
+        <span class="l-track-badge lb-green">Beginner</span>
+        <h1 class="l-title">Reading Stock Tables</h1>
+        <div class="l-meta"><span><i class="fas fa-clock"></i> 8 min</span><span><i class="fas fa-table"></i> Yahoo Finance guide</span></div>
+      </div>
+      <p class="l-p">Yahoo Finance is the most widely used free tool for stock research. Hedgex uses the same underlying data from Yahoo Finance via its API. Knowing how to read a stock table is your foundation for both fundamental analysis and everyday trading research.</p>
+
+      <h3 class="l-h3">The Summary Page — What Each Number Means</h3>
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Field</th><th>Where it comes from</th><th>What it tells you</th><th>Example (AAPL)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Previous Close</strong></td><td>Yesterday's closing price</td><td>Your reference point for today's % change</td><td>$188.12</td></tr>
+            <tr><td><strong>Open</strong></td><td>First trade of the current session</td><td>How the stock started the day vs. close</td><td>$187.44</td></tr>
+            <tr><td><strong>Day's Range</strong></td><td>Live: updated throughout the session</td><td>Intraday volatility and price boundaries</td><td>$186.90 – $190.02</td></tr>
+            <tr><td><strong>52-Week Range</strong></td><td>Historical: 52 weeks of daily data</td><td>Where current price sits in the annual range</td><td>$164.08 – $199.62</td></tr>
+            <tr><td><strong>Volume</strong></td><td>Live: shares traded today</td><td>Whether current activity is normal or unusual</td><td>68.2M</td></tr>
+            <tr><td><strong>Avg. Volume</strong></td><td>3-month average daily volume</td><td>Compare today's volume to the normal baseline</td><td>58.1M</td></tr>
+            <tr><td><strong>Market Cap</strong></td><td>Price × Shares Outstanding</td><td>Company size classification</td><td>$2.94T (mega-cap)</td></tr>
+            <tr><td><strong>Beta</strong></td><td>Relative volatility vs. S&P 500</td><td>Beta > 1 = more volatile than market; &lt; 1 = less</td><td>1.24</td></tr>
+            <tr><td><strong>P/E Ratio (TTM)</strong></td><td>Price ÷ EPS (trailing 12 months)</td><td>How much you pay per $1 of earnings</td><td>29.4x</td></tr>
+            <tr><td><strong>EPS (TTM)</strong></td><td>Net Income ÷ Shares Outstanding</td><td>Earnings per share over the last 12 months</td><td>$6.45</td></tr>
+            <tr><td><strong>Forward P/E</strong></td><td>Price ÷ expected future EPS</td><td>Valuation based on what analysts expect earnings to be</td><td>26.8x</td></tr>
+            <tr><td><strong>Dividend & Yield</strong></td><td>Annual dividend payment</td><td>Income you receive for holding the stock</td><td>$1.00 (0.53%)</td></tr>
+            <tr><td><strong>Ex-Dividend Date</strong></td><td>Calendar-based</td><td>You must own shares before this date to receive the dividend</td><td>Feb 9, 2024</td></tr>
+            <tr><td><strong>1y Target Est.</strong></td><td>Analyst consensus 12-month price target</td><td>Where professional analysts expect the stock to trade</td><td>$210.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="l-h3">Market Cap Classification</h3>
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Category</th><th>Market Cap Range</th><th>Characteristics</th><th>Examples</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill p-violet">Mega-Cap</span></td><td>> $200B</td><td>Extremely stable, global companies</td><td>AAPL, MSFT, NVDA</td></tr>
+            <tr><td><span class="pill p-blue">Large-Cap</span></td><td>$10B – $200B</td><td>Established, lower risk</td><td>DIS, NFLX, SBUX</td></tr>
+            <tr><td><span class="pill p-green">Mid-Cap</span></td><td>$2B – $10B</td><td>Growth potential, moderate risk</td><td>Many regional companies</td></tr>
+            <tr><td><span class="pill p-amber">Small-Cap</span></td><td>$300M – $2B</td><td>Higher growth potential, higher risk</td><td>Emerging businesses</td></tr>
+            <tr><td><span class="pill p-red">Micro-Cap</span></td><td>< $300M</td><td>Speculative, very illiquid</td><td>Early-stage companies</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout call-amber">
+        <div class="callout-label">Pro tip</div>
+        <div class="callout-title">Watch volume relative to average.</div>
+        <p class="callout-text">If today's volume is 2–3× the 3-month average, something significant is happening — earnings news, an analyst upgrade, or a merger rumor. <strong>High volume confirms price moves.</strong> A breakout on low volume is unreliable.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">How to evaluate a stock using Yahoo Finance in 60 seconds</div>
+        <p class="ex-text">1. Look at <strong>52-Week Range</strong> — is the stock near its high or low? 2. Check <strong>P/E</strong> — is it cheap or expensive for its sector? 3. Look at <strong>Beta</strong> — how much volatility are you taking on? 4. Check <strong>Volume vs. Avg Volume</strong> — is there unusual activity today? 5. Look at analyst <strong>1Y Target</strong> — what does the consensus expect?</p>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz: A stock has a Beta of 1.8. The S&P 500 drops 2% today. What would you expect this stock to do?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>Drop exactly 2% — it moves with the market</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">B</span>Drop 1% — it's more stable than the market</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">C</span>Drop approximately 3.6% — Beta 1.8 means 1.8× market moves</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>Rise 1.8% — high beta stocks move opposite the market</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! Beta 1.8 means the stock historically moves 1.8× the S&P 500. A 2% S&P drop → approximately 2% × 1.8 = 3.6% drop in this stock. High-beta stocks amplify market moves in both directions.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. Beta measures relative volatility vs. the S&P 500. Beta of 1.8 means the stock moves ~1.8× the market. S&P down 2% → this stock down ~3.6%. Beta above 1.0 = more volatile than market; below 1.0 = less volatile.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('C'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <button class="next-btn" onclick="loadLesson('indicators')">Next: Technical Indicators <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- ======== TECHNICAL INDICATORS ======== -->
+    <div class="lesson" id="lesson-indicators">
+      <div class="lesson-header">
+        <span class="l-track-badge lb-violet">Advanced</span>
+        <h1 class="l-title">Technical Indicators</h1>
+        <div class="l-meta"><span><i class="fas fa-clock"></i> 12 min</span><span><i class="fas fa-chart-line"></i> Charts + formulas</span></div>
+      </div>
+      <p class="l-p">Technical indicators are mathematical calculations applied to price and volume data. They help you identify trends, momentum, and potential entry/exit points. The key is not to use all of them — it's to understand a few deeply.</p>
+
+      <h3 class="l-h3">RSI — Relative Strength Index</h3>
+      <div class="callout call-blue">
+        <div class="callout-label">Definition</div>
+        <div class="callout-title">RSI (Relative Strength Index)</div>
+        <p class="callout-text">A momentum oscillator that measures the speed and magnitude of recent price changes on a scale from 0 to 100. Developed by J. Welles Wilder in 1978.</p>
+      </div>
+      <div class="formula-box">
+        <div class="formula-label">Formula</div>
+        <div class="formula-text">RSI = 100 – [100 ÷ (1 + RS)]   where RS = Avg Gain ÷ Avg Loss over N periods</div>
+        <div class="formula-explain">Default is 14 periods. RS is the ratio of the average gain days to average loss days over 14 sessions. An RSI of 70+ means buyers have been dominant — potentially overbought. Below 30 means sellers have dominated — potentially oversold.</div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-title">RSI — overbought and oversold zones</div>
+        <div class="chart-h-md"><canvas id="chart-rsi"></canvas></div>
+        <p class="chart-caption">Red zone (above 70) = potential sell signal. Green zone (below 30) = potential buy signal. RSI is most useful in range-bound, non-trending markets.</p>
+      </div>
+
+      <h3 class="l-h3">MACD — Moving Average Convergence/Divergence</h3>
+      <div class="callout call-violet">
+        <div class="callout-label">Definition</div>
+        <div class="callout-title">MACD</div>
+        <p class="callout-text">A trend-following momentum indicator showing the relationship between two exponential moving averages. It shows when bullish or bearish momentum is building.</p>
+      </div>
+      <div class="formula-box">
+        <div class="formula-label">Formula</div>
+        <div class="formula-text">MACD Line = EMA(12) – EMA(26) | Signal Line = EMA(9) of MACD | Histogram = MACD – Signal</div>
+        <div class="formula-explain">EMA = Exponential Moving Average (weights recent prices more). When MACD crosses above the Signal Line = bullish signal. When it crosses below = bearish signal. The Histogram shows the gap growing or shrinking.</div>
+      </div>
+
+      <h3 class="l-h3">Bollinger Bands</h3>
+      <div class="formula-box">
+        <div class="formula-label">Formula</div>
+        <div class="formula-text">Upper Band = SMA(20) + 2σ | Lower Band = SMA(20) – 2σ</div>
+        <div class="formula-explain">σ (sigma) = standard deviation of the last 20 closing prices. The bands expand during high volatility and contract when the market is calm. Price touching the upper band isn't automatically a sell signal — in a strong uptrend, price can "ride" the band.</div>
+      </div>
+
+      <h3 class="l-h3">Quick Reference — All Three Indicators</h3>
+      <div class="ind-3">
+        <div class="ind-card"><div class="ind-name">RSI</div><div class="ind-type">Momentum · 0–100</div><p class="ind-sig">Buy signal: RSI crosses above 30 from below. Sell signal: RSI crosses below 70 from above.</p><div class="ind-bar"><div class="ind-fill" style="width:65%;background:var(--amber);"></div></div></div>
+        <div class="ind-card"><div class="ind-name">MACD</div><div class="ind-type">Trend Momentum · Signal Cross</div><p class="ind-sig">Buy: MACD crosses above Signal Line. Sell: MACD crosses below Signal Line. Watch the histogram.</p><div class="ind-bar"><div class="ind-fill" style="width:55%;background:var(--primary);"></div></div></div>
+        <div class="ind-card"><div class="ind-name">Bollinger Bands</div><div class="ind-type">Volatility · 2σ envelope</div><p class="ind-sig">Squeeze (bands narrowing) = big move coming. Price > upper band = high volatility, not necessarily sell.</p><div class="ind-bar"><div class="ind-fill" style="width:45%;background:var(--violet);"></div></div></div>
+      </div>
+
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Indicator</th><th>Category</th><th>Lagging?</th><th>Works best in</th><th>Weakness</th></tr></thead>
+          <tbody>
+            <tr><td>Moving Average</td><td>Trend</td><td>Yes</td><td>Trending markets</td><td>Slow — lags price action</td></tr>
+            <tr><td>RSI</td><td>Momentum</td><td>No</td><td>Range-bound markets</td><td>False signals in strong trends</td></tr>
+            <tr><td>MACD</td><td>Momentum + Trend</td><td>Slightly</td><td>Medium-term trades</td><td>Whipsaws in sideways markets</td></tr>
+            <tr><td>Bollinger Bands</td><td>Volatility</td><td>No</td><td>Mean reversion setups</td><td>Doesn't show direction</td></tr>
+            <tr><td>Volume</td><td>Confirmation</td><td>No</td><td>Confirming breakouts</td><td>Alone, not predictive</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz: An RSI reading of 28 on a stock that has been in a downtrend for 3 months. What does this signal, and what's the important caveat?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>Strong buy — RSI below 30 always means buy immediately</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">B</span>Potentially oversold, but in a strong downtrend RSI can stay below 30 for extended periods — wait for confirmation</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">C</span>Strong sell — RSI below 30 means the stock is broken</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>RSI is irrelevant — only use it in bull markets</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! RSI below 30 = oversold, but context matters enormously. In a strong downtrend, stocks can stay oversold for weeks or months. Always wait for RSI to cross back above 30 (or other confirmation signals) before buying. "Catching a falling knife" is one of the most common beginner mistakes.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. RSI below 30 flags oversold conditions but is not a guaranteed buy signal — especially in a downtrend. The correct approach: note the oversold reading, but wait for RSI to cross back above 30 or for price to show a reversal pattern before acting.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('B'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <button class="next-btn" onclick="loadLesson('fundamental')">Next: Fundamental Analysis <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- ======== FUNDAMENTAL ANALYSIS ======== -->
+    <div class="lesson" id="lesson-fundamental">
+      <div class="lesson-header">
+        <span class="l-track-badge lb-violet">Advanced</span>
+        <h1 class="l-title">Fundamental Analysis</h1>
+        <div class="l-meta"><span><i class="fas fa-clock"></i> 10 min</span><span><i class="fas fa-table"></i> Formulas + tables</span></div>
+      </div>
+      <p class="l-p">Fundamental analysis asks: <em>is this company actually worth investing in?</em> Instead of looking at price charts, you look at the business's financials, competitive position, and growth trajectory.</p>
+
+      <h3 class="l-h3">The Core Ratios — Formulas and Meaning</h3>
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Ratio</th><th>Formula</th><th>What it tells you</th><th>Interpretation</th><th>AAPL example</th></tr></thead>
+          <tbody>
+            <tr><td><strong>P/E Ratio</strong></td><td>Price ÷ EPS (TTM)</td><td>What you pay per $1 of earnings</td><td>Lower = cheaper; compare within same sector</td><td>29.4x</td></tr>
+            <tr><td><strong>EPS</strong></td><td>Net Income ÷ Shares Outstanding</td><td>Profit attributable to each share</td><td>Growing EPS = company getting more profitable</td><td>$6.45</td></tr>
+            <tr><td><strong>PEG Ratio</strong></td><td>P/E ÷ EPS Growth Rate</td><td>P/E adjusted for growth</td><td>PEG < 1 = potentially undervalued; > 2 = expensive</td><td>2.1</td></tr>
+            <tr><td><strong>P/B Ratio</strong></td><td>Price ÷ Book Value per Share</td><td>Price vs. accounting value of assets</td><td>Below 1 = potentially undervalued on assets</td><td>44.2x</td></tr>
+            <tr><td><strong>Gross Margin</strong></td><td>(Revenue – COGS) ÷ Revenue × 100</td><td>Profitability before operating expenses</td><td>Higher is better; 40%+ is strong for most sectors</td><td>45.9%</td></tr>
+            <tr><td><strong>Debt/Equity</strong></td><td>Total Debt ÷ Shareholders' Equity</td><td>Financial leverage / solvency risk</td><td>Below 1.0 generally safer; context matters</td><td>1.81</td></tr>
+            <tr><td><strong>ROE</strong></td><td>Net Income ÷ Shareholders' Equity × 100</td><td>How efficiently equity generates profit</td><td>Above 15% is generally strong</td><td>147%</td></tr>
+            <tr><td><strong>Current Ratio</strong></td><td>Current Assets ÷ Current Liabilities</td><td>Ability to pay short-term obligations</td><td>Above 1.5 = comfortable liquidity</td><td>0.99</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-label">Formula — PEG Ratio (Peter Lynch's favorite)</div>
+        <div class="formula-text">PEG = P/E Ratio ÷ Annual EPS Growth Rate (%)</div>
+        <div class="formula-explain">Example: A company with a P/E of 20 and 20% annual EPS growth has a PEG of 1.0 — fairly valued. A company with P/E of 40 and 10% growth has a PEG of 4.0 — expensive relative to its growth.</div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-title">Revenue growth — comparing fast vs. slow growing companies</div>
+        <div class="chart-h-md"><canvas id="chart-fundamental"></canvas></div>
+        <p class="chart-caption">High revenue growth usually justifies a higher P/E. When growth slows, the market often reprices the stock downward — even if it's still profitable.</p>
+      </div>
+
+      <div class="callout call-violet">
+        <div class="callout-label">Key principle</div>
+        <div class="callout-title">Always compare within the same sector.</div>
+        <p class="callout-text">A P/E of 30 is cheap for a high-growth software company but expensive for a utility or bank. Use sector medians as your benchmark, not the overall S&P 500 average of ~20x.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">Full fundamental analysis example — NVDA</div>
+        <p class="ex-text">NVIDIA (NVDA) has a P/E of ~71x — much higher than the S&P 500 average. But its EPS grew 152% in 2024. PEG = 71 ÷ 152 = 0.47 — which actually suggests it may be <strong>undervalued relative to its growth rate</strong>. Revenue growing at 122% YoY, gross margins of 78%, and near-zero debt. A fundamental analyst might conclude the premium valuation is justified by AI chip demand — but carries execution risk if growth slows.</p>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz: A company has a P/E of 45 and annual EPS growth of 45%. Its PEG ratio is:</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>45 — PEG equals the P/E when growth matches it</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">B</span>1.0 — PEG = P/E ÷ growth rate = 45 ÷ 45</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">C</span>0.45 — PEG = P/E × growth rate</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>90 — PEG = P/E + growth rate</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! PEG = P/E ÷ EPS growth rate = 45 ÷ 45 = 1.0. A PEG of 1.0 is generally considered fairly valued. Below 1.0 = potentially undervalued relative to growth; above 2.0 = expensive relative to growth.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. PEG = P/E ÷ Annual EPS Growth Rate (%). So 45 ÷ 45 = 1.0. Peter Lynch popularized PEG — he considered anything below 1.0 potentially cheap and above 2.0 potentially expensive.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('B'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <button class="next-btn" onclick="loadLesson('sentiment')">Next: News & Sentiment <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- ======== NEWS & SENTIMENT ======== -->
+    <div class="lesson" id="lesson-sentiment">
+      <div class="lesson-header">
+        <span class="l-track-badge lb-violet">Advanced</span>
+        <h1 class="l-title">News & Market Sentiment</h1>
+        <div class="l-meta"><span><i class="fas fa-clock"></i> 9 min</span><span><i class="fas fa-newspaper"></i> Real examples</span></div>
+      </div>
+      <p class="l-p">Market prices reflect not just a company's financials — they also reflect how investors <em>feel</em> about the future. Understanding how to read news and gauge market sentiment is one of the most powerful (and underrated) skills in investing.</p>
+
+      <div class="callout call-blue">
+        <div class="callout-label">Definition</div>
+        <div class="callout-title">Market Sentiment</div>
+        <p class="callout-text">The overall attitude of investors toward a particular stock or the broader market. Sentiment is bullish when investors are optimistic and expect prices to rise, and bearish when they expect prices to fall.</p>
+      </div>
+
+      <h3 class="l-h3">Types of Market-Moving News</h3>
+      <div class="sentiment-grid">
+        <div class="sentiment-card"><div class="sc-icon" style="color:var(--green);">&#128200;</div><div class="sc-label">Earnings Reports</div><div class="sc-desc">Quarterly results — revenue, EPS, and forward guidance. The most predictable and high-impact event.</div></div>
+        <div class="sentiment-card"><div class="sc-icon" style="color:var(--primary);">&#128203;</div><div class="sc-label">Analyst Ratings</div><div class="sc-desc">Upgrades (Buy), downgrades (Sell), price target changes. Can move stocks 3–8% on a single note.</div></div>
+        <div class="sentiment-card"><div class="sc-icon" style="color:var(--violet);">&#127970;</div><div class="sc-label">Fed Announcements</div><div class="sc-desc">Interest rate decisions move the entire market. Rate hikes are bearish for growth stocks; cuts are bullish.</div></div>
+        <div class="sentiment-card"><div class="sc-icon" style="color:var(--amber);">&#128240;</div><div class="sc-label">Macro Economic Data</div><div class="sc-desc">CPI (inflation), jobs reports, GDP — these move market sentiment before individual stocks.</div></div>
+        <div class="sentiment-card"><div class="sc-icon" style="color:var(--red);">&#9888;</div><div class="sc-label">Geopolitical Events</div><div class="sc-desc">Wars, trade disputes, elections. Create fear and uncertainty — usually short-term but extreme impact.</div></div>
+        <div class="sentiment-card"><div class="sc-icon" style="color:var(--green);">&#128736;</div><div class="sc-label">Product Launches</div><div class="sc-desc">New products, partnerships, or patents. Apple's iPhone announcements historically move AAPL ±3%.</div></div>
+      </div>
+
+      <h3 class="l-h3">How to Read an Earnings Report</h3>
+      <p class="l-p">Earnings are released every quarter. The market reacts to whether results <strong>beat or miss analyst expectations</strong> — not to whether results are good or bad in absolute terms.</p>
+
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Metric</th><th>What "beat" means</th><th>What "miss" means</th><th>Typical reaction</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Revenue</strong></td><td>Actual revenue > consensus estimate</td><td>Actual revenue < consensus estimate</td><td>Beat = +2–5%, Miss = -3–8%</td></tr>
+            <tr><td><strong>EPS</strong></td><td>Actual earnings per share > estimate</td><td>Actual EPS < estimate</td><td>EPS beats often matter more than revenue</td></tr>
+            <tr><td><strong>Guidance</strong></td><td>Next quarter outlook above expectations</td><td>Next quarter outlook below expectations</td><td>Guidance often moves stock more than results</td></tr>
+            <tr><td><strong>Gross Margin</strong></td><td>Margins expanding quarter-over-quarter</td><td>Margins compressing</td><td>Margin expansion = efficiency improvement signal</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout call-amber">
+        <div class="callout-label">Key concept</div>
+        <div class="callout-title">"Buy the rumor, sell the news"</div>
+        <p class="callout-text">Stocks often rise <em>before</em> a positive announcement as investors anticipate good news. Once the news is actually released — even if good — the stock can sell off because buyers have already positioned and are now taking profit. This is called a <strong>sell-the-news event</strong>. NVDA regularly beat earnings and dropped the same day.</p>
+      </div>
+
+      <h3 class="l-h3">Sentiment Indicators</h3>
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Indicator</th><th>What it measures</th><th>Bullish reading</th><th>Bearish reading</th></tr></thead>
+          <tbody>
+            <tr><td><strong>VIX (Fear Index)</strong></td><td>Expected 30-day volatility of the S&P 500</td><td>Below 15 = calm, complacent market</td><td>Above 30 = panic / high fear</td></tr>
+            <tr><td><strong>Put/Call Ratio</strong></td><td>Options contracts: bearish bets vs. bullish bets</td><td>Below 0.7 = more calls = bullish lean</td><td>Above 1.0 = more puts = fear</td></tr>
+            <tr><td><strong>Short Interest %</strong></td><td>% of float sold short</td><td>Low short interest = fewer bears</td><td>High short interest can trigger short squeezes</td></tr>
+            <tr><td><strong>Insider Buying</strong></td><td>Executives buying their own stock</td><td>Heavy insider buying = confidence signal</td><td>Heavy insider selling = caution signal</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="formula-box">
+        <div class="formula-label">How to calculate earnings surprise %</div>
+        <div class="formula-text">Surprise % = [(Actual EPS − Estimated EPS) ÷ |Estimated EPS|] × 100</div>
+        <div class="formula-explain">Example: NVDA estimated EPS $5.60, actual EPS $6.12. Surprise = [(6.12 − 5.60) ÷ 5.60] × 100 = <strong>+9.3% positive surprise</strong>. A surprise above 5% typically produces a strong gap-up at open.</div>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">How to research sentiment before taking a trade</div>
+        <p class="ex-text">1. Check the <strong>earnings calendar</strong> — is earnings in the next 2 weeks? Avoid holding through earnings unless you have a specific thesis. 2. Look at <strong>analyst consensus</strong> on Yahoo Finance under "Analysis" — how many Buy/Hold/Sell ratings? 3. Check the <strong>VIX</strong> — is the market fearful or complacent? 4. Search recent news headlines for the ticker — any SEC filings, lawsuits, or partnerships you're not aware of? 5. Look at <strong>short interest</strong> — a heavily shorted stock can spike violently on good news (short squeeze).</p>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz: A company reports earnings that beat analyst EPS estimates by 12%, but their guidance for next quarter comes in below expectations. What typically happens to the stock?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>Strong rally — a 12% beat always means the stock goes up</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">B</span>No reaction — past earnings don't move stocks</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">C</span>Often sells off — weak guidance outweighs the beat because the market is forward-looking</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>Gaps up then recovers — guidance never matters more than the actual beat</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! The market is forward-looking. Strong past earnings plus weak guidance = "the best is behind us" narrative. Stocks frequently sell off after earnings beats when guidance disappoints. This is why guidance is often more important than the actual quarterly results.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. Guidance is often more important than the beat. The market prices in future expectations, not past performance. Weak guidance signals the company expects conditions to worsen — and the stock typically falls even on a strong beat. This is one of the most counterintuitive things about earnings season.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('C'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <button class="next-btn" onclick="loadLesson('strategies')">Next: Trading Strategies <i class="fas fa-arrow-right"></i></button>
+    </div>
+
+    <!-- ======== TRADING STRATEGIES ======== -->
+    <div class="lesson" id="lesson-strategies">
+      <div class="lesson-header">
+        <span class="l-track-badge lb-violet">Advanced</span>
+        <h1 class="l-title">Trading Strategies</h1>
+        <div class="l-meta"><span><i class="fas fa-clock"></i> 10 min</span></div>
+      </div>
+      <p class="l-p">A trading strategy is a set of rules that tells you exactly when to enter, when to exit, and how much to risk. Without a strategy, you're not trading — you're gambling with extra steps.</p>
+
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Strategy</th><th>Timeframe</th><th>Analyis type</th><th>Best For</th><th>Risk level</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Day Trading</strong></td><td>Minutes to hours</td><td>Technical</td><td>Traders who can monitor markets all day</td><td><span class="pill p-red">Very High</span></td></tr>
+            <tr><td><strong>Swing Trading</strong></td><td>Days to weeks</td><td>Technical + some fundamental</td><td>Active traders with moderate time</td><td><span class="pill p-amber">Medium-High</span></td></tr>
+            <tr><td><strong>Position Trading</strong></td><td>Weeks to months</td><td>Fundamental + technical</td><td>Investors comfortable with larger moves</td><td><span class="pill p-blue">Medium</span></td></tr>
+            <tr><td><strong>Value Investing</strong></td><td>Years</td><td>Deep fundamental</td><td>Patient investors with long horizons</td><td><span class="pill p-green">Lower</span></td></tr>
+            <tr><td><strong>Growth Investing</strong></td><td>Years</td><td>Fundamental: growth metrics</td><td>Investors willing to pay up for growth</td><td><span class="pill p-blue">Medium</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout call-green">
+        <div class="callout-label">For Hedgex users</div>
+        <div class="callout-title">Start with swing trading.</div>
+        <p class="callout-text">Day trading requires near-instant decisions and statistically produces the worst results for new traders. Practice swing trading first — hold positions for 2–10 days, focus on chart patterns and R:R ratios. The Hedgex simulator is designed for this style.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-label">A complete swing trade example</div>
+        <p class="ex-text">You see MSFT forming a <strong>cup-and-handle</strong> pattern on a daily chart, with RSI at 52 (neutral) and MACD crossing up. Entry: $410 on a volume breakout. Stop: $404 (just below the handle low). Target: $426 (measured move based on cup depth). Risk = $6, Reward = $16 → R:R = 1:2.7. Position size: 1% account risk = $1,000 ÷ $6 = 166 shares.</p>
+      </div>
+
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz: A day trader and a swing trader both buy the same stock at $100. The day trader sells at $102 (+2%) the same day. The swing trader holds 8 days and sells at $112 (+12%). Who made the "better" trade, and why might both be valid?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>The swing trader — a 12% gain is always better than 2%</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">B</span>The day trader — less time in the market = less risk</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">C</span>Both valid — each executed their strategy correctly; the right choice depends on your time, risk tolerance, and system</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>Neither — you should never sell before a 20% gain</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! Both trades are valid if each trader followed their pre-defined strategy. The day trader took a clean 2% with zero overnight risk. The swing trader accepted 8 days of price risk for a 12% gain. Neither is objectively better — what matters is consistency and discipline within your own system.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. Both are valid depending on the trader's strategy. The key insight: a "good trade" isn't measured by profit alone — it's measured by whether you followed your process. A 2% gain from a flawless day trade is just as valid as a 12% swing trade gain.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('C'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <a href="/simulator" class="next-btn">Test a strategy in the Simulator <i class="fas fa-flask"></i></a>
+    </div>
+
+    <!-- ======== TRADING PSYCHOLOGY ======== -->
+    <div class="lesson" id="lesson-psychology">
+      <div class="lesson-header">
+        <span class="l-track-badge lb-violet">Advanced</span>
+        <h1 class="l-title">Trading Psychology</h1>
+        <div class="l-meta"><span><i class="fas fa-clock"></i> 9 min</span><span><i class="fas fa-brain"></i> Case studies</span><span><i class="fas fa-circle-question"></i> 2 quizzes</span></div>
+      </div>
+      <p class="l-p">Most traders fail not because of bad strategy — but because of psychological mistakes. The market is designed to exploit human instincts. Your instincts were built for survival, not for navigating volatile asset prices.</p>
+
+      <h3 class="l-h3">The Four Biggest Biases</h3>
+      <div class="bias-grid">
+        <div class="bias-card bc-fear"><div class="bias-type bt-fear">Emotional</div><div class="bias-name">Fear & Panic Selling</div><p class="bias-desc">Normal pullbacks trigger premature exits from perfectly good trades. Fear makes you sell at exactly the wrong moment.</p><p class="bias-ex">Example: Selling NVDA at a 4% pullback only to watch it recover 18% over the next two weeks.</p></div>
+        <div class="bias-card bc-greed"><div class="bias-type bt-greed">Emotional</div><div class="bias-name">Greed & Overconfidence</div><p class="bias-desc">Holding past your target, over-sizing during winning streaks, or adding to losing positions because you're "sure" it'll recover.</p><p class="bias-ex">Example: Your $300 target gets hit but you hold for $350 because it "feels" like it'll keep going. It doesn't.</p></div>
+        <div class="bias-card bc-confirm"><div class="bias-type bt-confirm">Cognitive</div><div class="bias-name">Confirmation Bias</div><p class="bias-desc">Only consuming information that supports your existing trade idea. Ignoring red flags that would force you to rethink.</p><p class="bias-ex">Example: Only reading bullish analyst reports on a stock you already own, ignoring negative earnings revisions.</p></div>
+        <div class="bias-card bc-loss"><div class="bias-type bt-loss">Cognitive</div><div class="bias-name">Loss Aversion</div><p class="bias-desc">Research shows losses feel ~2× more painful than equivalent gains. This leads to holding losers too long and cutting winners too early.</p><p class="bias-ex">Example: Refusing to sell a -35% position because "selling makes the loss real." Meanwhile it falls to -60%.</p></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-title">Emotional cycle of a new trader</div>
+        <div class="chart-h-md"><canvas id="chart-emotion"></canvas></div>
+        <p class="chart-caption">Every new trader follows a predictable emotional arc. The goal of practice trading is to experience and survive this cycle with virtual capital first.</p>
+      </div>
+
+      <div class="callout call-green">
+        <div class="callout-label">The Fix</div>
+        <div class="callout-title">Write your trade plan before entering any position.</div>
+        <p class="callout-text">Before entering a trade, write down: (1) entry price, (2) stop-loss, (3) target, (4) R:R ratio, (5) reason for the trade. When emotions hit during the trade, <strong>refer to the plan — not your feelings</strong>. If the plan still makes sense, stay in. If conditions changed, exit.</p>
+      </div>
+
+      <h3 class="l-h3">How to Build Mental Discipline</h3>
+      <div class="def-grid">
+        <div class="def-card"><div class="def-term">Trade Journal</div><p class="def-text">Write down every trade: entry, exit, reasoning, and how you felt. Review weekly. Patterns in your mistakes become obvious very quickly.</p></div>
+        <div class="def-card"><div class="def-term">Pre-Trade Checklist</div><p class="def-text">Before entering: Does this match my strategy? Is the R:R at least 1:2? Am I trading out of boredom or FOMO? If any answer is wrong, skip the trade.</p></div>
+        <div class="def-card"><div class="def-term">Set Hard Rules</div><p class="def-text">Max loss per day. Max positions at once. No trading the first 30 minutes of market open. Rules remove in-the-moment decisions that emotions corrupt.</p></div>
+        <div class="def-card"><div class="def-term">Pause After Losses</div><p class="def-text">"Revenge trading" — immediately trying to win back a loss — is one of the most common and destructive patterns. After a loss, stop for the day.</p></div>
+      </div>
+
+      <h3 class="l-h3">The FOMO Trap</h3>
+      <p class="l-p"><strong>FOMO (Fear of Missing Out)</strong> causes traders to chase stocks that have already moved significantly. You see NVDA up 8% and jump in near the top — right as early buyers are selling their profits into your buy order. This is called being "the exit liquidity."</p>
+
+      <div class="example-box">
+        <div class="ex-label">FOMO vs. Discipline — a real pattern</div>
+        <p class="ex-text">NVDA reports earnings and gaps up 12% at open. The disciplined trader had a plan: "I'll only buy NVDA if it pulls back to its prior support at $820 with strong volume." The FOMO trader buys the gap-up at $870. By 2pm, NVDA has "sold the news" back to $840. The disciplined trader either waits for the setup or misses the trade entirely — which is fine. The FOMO trader is down $30/share and now makes emotional decisions to hold or cut. <strong>Missing a trade costs nothing. Chasing one can cost a lot.</strong></p>
+      </div>
+
+      <h3 class="l-h3">The Dunning-Kruger Curve in Trading</h3>
+      <p class="l-p">Most new traders go through a predictable confidence cycle:</p>
+      <div class="l-table-wrap">
+        <table class="l-table">
+          <thead><tr><th>Phase</th><th>What happens</th><th>Common mistake</th><th>Exit strategy</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1. Excitement</strong></td><td>First wins, overconfidence, "this is easy"</td><td>Over-sizing positions, ignoring risk</td><td>Keep position sizes small regardless of wins</td></tr>
+            <tr><td><strong>2. Reality Check</strong></td><td>First losing streak, losses larger than expected</td><td>Revenge trading, abandoning the plan</td><td>Stick strictly to stop-losses, review journal</td></tr>
+            <tr><td><strong>3. Frustration</strong></td><td>Convinced the market is rigged against you</td><td>Quitting before learning the real lessons</td><td>Read trade journal, find pattern in mistakes</td></tr>
+            <tr><td><strong>4. Acceptance</strong></td><td>Understanding that losses are part of the process</td><td>Still letting emotions creep into decisions</td><td>Pre-trade checklist every single time</td></tr>
+            <tr><td><strong>5. Consistency</strong></td><td>Systematic approach, R:R driven, emotion-reduced</td><td>Complacency, skipping rules after a hot streak</td><td>Never stop following the process</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- QUIZ 1 -->
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz 1: A trader has a winning streak of 5 profitable trades. On trade 6, they size up to 3× their normal position "because they're on a roll." This is an example of which bias?</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>Loss Aversion — they fear missing a gain</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">B</span>Confirmation Bias — they're seeking proof they're right</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">C</span>Overconfidence / Greed — recent wins inflated their risk tolerance</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>Recency Bias — they think recent patterns will continue forever</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! Overconfidence after a win streak is one of the most dangerous patterns. Each trade should be sized the same regardless of recent performance — the market doesn't know or care about your streak.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. This is primarily overconfidence / greed — the trader believes they're "hot" and increases risk beyond their normal plan. Recency bias plays a supporting role, but greed is the driving force here.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('C'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <!-- QUIZ 2 -->
+      <div class="quiz-box">
+        <div class="quiz-q">Quiz 2: A trader buys a stock at $50. It drops to $35. Instead of selling at their $45 stop-loss (which they ignored), they say "I'll hold until it comes back to $50." This is primarily:</div>
+        <div class="quiz-opts">
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">A</span>Smart long-term investing — patience always pays off</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">B</span>Confirmation Bias — they're reading bullish articles to justify holding</div>
+          <div class="quiz-opt" onclick="checkQ(this,true)"><span class="opt-letter">C</span>Loss Aversion — selling makes the loss "real," so they avoid it even at greater cost</div>
+          <div class="quiz-opt" onclick="checkQ(this,false)"><span class="opt-letter">D</span>Correct risk management — you should never sell at a loss</div>
+        </div>
+        <div class="quiz-result qr-ok" style="display:none;">Correct! Loss Aversion in action. By ignoring the $45 stop-loss, the trader let a $500 loss ($50→$45 × 10 shares) become a $1,500 loss ($50→$35). The psychological resistance to "making it real" by selling often causes far larger losses.</div>
+        <div class="quiz-result qr-bad" style="display:none;">Not quite. This is Loss Aversion — the pain of realizing a loss feels worse than watching it grow unrealized. The correct action was to honor the $45 stop-loss and cut the position. Stop-losses exist precisely for this scenario.</div>
+        <button class="quiz-reset" onclick="this.closest('.quiz-box').querySelectorAll('.quiz-opt').forEach(o=>{o.classList.remove('correct','wrong');o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('C'));};});this.closest('.quiz-box').querySelectorAll('.quiz-result').forEach(r=>r.style.display='none');">Reset</button>
+      </div>
+
+      <a href="/practice" class="next-btn">Apply this in practice trading <i class="fas fa-chart-line"></i></a>
+    </div>
+
+    <!-- ======== RESOURCES ======== -->
+    <div class="lesson" id="lesson-resources">
+      <div class="lesson-header">
+        <span class="l-track-badge" style="background:var(--primary-dim);color:var(--primary);">Resources</span>
+        <h1 class="l-title">Links & Further Reading</h1>
+        <div class="l-meta"><span><i class="fas fa-link"></i> Curated resources</span></div>
+      </div>
+      <p class="l-p">These are the best free resources to continue learning beyond Hedgex. Each one is genuinely worth your time.</p>
+
+      <h3 class="l-h3">Research & Data Tools</h3>
+      <div class="resource-list">
+        <a class="resource-item" href="https://finance.yahoo.com" target="_blank">
+          <div class="ri-icon fi-blue"><i class="fas fa-chart-line"></i></div>
+          <div><div class="ri-title">Yahoo Finance</div><div class="ri-desc">The data source behind Hedgex. Use it for stock quotes, financials, earnings calendars, and analyst ratings.</div><div class="ri-link">finance.yahoo.com <i class="fas fa-arrow-up-right-from-square"></i></div></div>
+        </a>
+        <a class="resource-item" href="https://finviz.com" target="_blank">
+          <div class="ri-icon fi-violet"><i class="fas fa-magnifying-glass"></i></div>
+          <div><div class="ri-title">Finviz Stock Screener</div><div class="ri-desc">Screen thousands of stocks by P/E, market cap, sector, RSI, moving average conditions, and more. Free and powerful.</div><div class="ri-link">finviz.com <i class="fas fa-arrow-up-right-from-square"></i></div></div>
+        </a>
+        <a class="resource-item" href="https://www.macrotrends.net" target="_blank">
+          <div class="ri-icon fi-green"><i class="fas fa-database"></i></div>
+          <div><div class="ri-title">Macrotrends</div><div class="ri-desc">Long-term financial data with beautiful charts. Great for comparing P/E ratios, revenue growth, and margins over decades.</div><div class="ri-link">macrotrends.net <i class="fas fa-arrow-up-right-from-square"></i></div></div>
+        </a>
+        <a class="resource-item" href="https://unusualwhales.com" target="_blank">
+          <div class="ri-icon fi-violet"><i class="fas fa-fish"></i></div>
+          <div><div class="ri-title">Unusual Whales</div><div class="ri-desc">Options flow, dark pool activity, earnings calendars, and political stock trades. Advanced but extremely informative.</div><div class="ri-link">unusualwhales.com <i class="fas fa-arrow-up-right-from-square"></i></div></div>
+        </a>
+      </div>
+
+      <h3 class="l-h3">News & Market Sentiment</h3>
+      <div class="resource-list">
+        <a class="resource-item" href="https://www.marketwatch.com" target="_blank">
+          <div class="ri-icon fi-blue"><i class="fas fa-newspaper"></i></div>
+          <div><div class="ri-title">MarketWatch</div><div class="ri-desc">Real-time financial news, market data, and analysis. Good for understanding what's moving markets each day.</div><div class="ri-link">marketwatch.com <i class="fas fa-arrow-up-right-from-square"></i></div></div>
+        </a>
+        <a class="resource-item" href="https://seekingalpha.com" target="_blank">
+          <div class="ri-icon fi-amber" style="background:var(--amber-dim);color:var(--amber);"><i class="fas fa-pen"></i></div>
+          <div><div class="ri-title">Seeking Alpha</div><div class="ri-desc">Long-form stock analysis from thousands of contributors. Great for reading bull and bear cases on specific stocks.</div><div class="ri-link">seekingalpha.com <i class="fas fa-arrow-up-right-from-square"></i></div></div>
+        </a>
+      </div>
+
+      <h3 class="l-h3">Educational Reading</h3>
+      <div class="resource-list">
+        <a class="resource-item" href="https://www.investopedia.com/university/technical/" target="_blank">
+          <div class="ri-icon fi-blue"><i class="fas fa-graduation-cap"></i></div>
+          <div><div class="ri-title">Investopedia — Technical Analysis Course</div><div class="ri-desc">The most thorough free technical analysis guide online. Covers everything from candlesticks to advanced patterns.</div><div class="ri-link">investopedia.com <i class="fas fa-arrow-up-right-from-square"></i></div></div>
+        </a>
+        <a class="resource-item" href="https://www.khanacademy.org/economics-finance-domain/core-finance" target="_blank">
+          <div class="ri-icon fi-green"><i class="fas fa-school"></i></div>
+          <div><div class="ri-title">Khan Academy — Finance & Capital Markets</div><div class="ri-desc">Free, structured video lessons covering everything from basic interest rates to options pricing. No jargon, just concepts.</div><div class="ri-link">khanacademy.org <i class="fas fa-arrow-up-right-from-square"></i></div></div>
+        </a>
+        <a class="resource-item" href="https://www.sec.gov/education/financialnavigator" target="_blank">
+          <div class="ri-icon fi-violet"><i class="fas fa-landmark"></i></div>
+          <div><div class="ri-title">SEC Investor Education</div><div class="ri-desc">The U.S. government's official investor education portal. Covers basics, fraud protection, and reading SEC filings.</div><div class="ri-link">sec.gov <i class="fas fa-arrow-up-right-from-square"></i></div></div>
+        </a>
+      </div>
+
+    </div>
+  </div><!-- /main -->
+</div><!-- /page-wrap -->
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>© 2025 Hedgex Financial Literacy</span>
+    <div style="display:flex;gap:20px;"><a href="/">Home</a><a href="/practice">Practice</a><a href="/analysis">Analysis</a><a href="/simulator">Simulator</a></div>
+    <span>Built by Tanish Chauhan</span>
+  </div>
+</footer>
+
+<script>
+// THEME
+const themeBtn=document.getElementById('themeBtn');
+const html=document.documentElement;
+const saved=localStorage.getItem('hx-theme');
+if(saved) html.setAttribute('data-theme',saved);
+else if(window.matchMedia('(prefers-color-scheme:light)').matches) html.setAttribute('data-theme','light');
+function applyTheme(){const t=html.getAttribute('data-theme');themeBtn.innerHTML=t==='dark'?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';}
+applyTheme();
+themeBtn.addEventListener('click',()=>{const t=html.getAttribute('data-theme')==='dark'?'light':'dark';html.setAttribute('data-theme',t);localStorage.setItem('hx-theme',t);applyTheme();renderCharts();});
+document.getElementById('mobileBtn').addEventListener('click',()=>{document.getElementById('navLinks').classList.toggle('open');});
+
+// SIDEBAR NAV
+function loadLesson(id){
+  document.querySelectorAll('.lesson').forEach(p=>{p.classList.remove('active');});
+  document.querySelectorAll('.sb-link').forEach(l=>{l.classList.remove('active');});
+  const panel=document.getElementById('lesson-'+id);
+  if(panel) panel.classList.add('active');
+  const link=document.querySelector('[data-lesson="'+id+'"]');
+  if(link) link.classList.add('active');
+  renderCharts();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.sb-link').forEach(link=>{
+  link.addEventListener('click',()=>loadLesson(link.getAttribute('data-lesson')));
+});
+
+function switchTrack(t){
+  document.getElementById('tbBeg').className='track-btn'+(t==='beg'?' tb-beg':'');
+  document.getElementById('tbAdv').className='track-btn'+(t==='adv'?' tb-adv':'');
+  if(t==='beg') loadLesson('stocks');
+  else loadLesson('indicators');
+}
+
+// QUIZ
+function checkQ(el,correct){
+  const box=el.closest('.quiz-box');
+  box.querySelectorAll('.quiz-opt').forEach(o=>{o.onclick=null;});
+  el.classList.add(correct?'correct':'wrong');
+  box.querySelectorAll('.quiz-result').forEach(r=>{
+    const isOk=r.classList.contains('qr-ok');
+    const isBad=r.classList.contains('qr-bad');
+    const show=(isOk&&correct)||(isBad&&!correct);
+    // Support both show-class and inline-style patterns
+    r.classList.toggle('show',show);
+    r.style.display=show?'block':'none';
+  });
+}
+function resetQ(id){
+  document.querySelectorAll('#lesson-'+id+' .quiz-opt').forEach(o=>{
+    o.classList.remove('correct','wrong');
+    o.onclick=function(){checkQ(this,o.textContent.trim().startsWith('C'));};
+  });
+  document.querySelectorAll('#lesson-'+id+' .quiz-result').forEach(r=>{
+    r.classList.remove('show');
+    r.style.display='none';
+  });
+}
+
+// CHARTS
+const chartInstances={};
+function dc(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id];}}
+function mk(id,cfg){dc(id);const el=document.getElementById(id);if(!el)return;chartInstances[id]=new Chart(el.getContext('2d'),cfg);}
+
+function getC(){
+  const dark=html.getAttribute('data-theme')==='dark';
+  return{grid:dark?'rgba(26,40,64,0.7)':'rgba(200,225,245,0.6)',text:dark?'#3d5a78':'#90b8d8',p:dark?'#60cfff':'#0284c7',g:'#10b981',r:'#ef4444',v:'#7c3aed',a:'#f59e0b',dark};
+}
+
+function renderCharts(){
+  const c=getC();
+  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#0f1923',titleColor:c.text,bodyColor:'#ddeeff',cornerRadius:8,padding:10}},scales:{x:{border:{display:false},grid:{color:c.grid},ticks:{color:c.text,font:{size:10},maxTicksLimit:8}},y:{border:{display:false},grid:{color:c.grid},ticks:{color:c.text,font:{size:10}}}}};
+
+  // Supply chart
+  const supplyData=[100,102,101,105,108,106,112,115,113,118,121,119,124,127,130];
+  mk('chart-supply',{type:'line',data:{labels:supplyData.map((_,i)=>'D'+(i+1)),datasets:[{data:supplyData,borderColor:c.p,borderWidth:2.5,pointRadius:0,tension:0.45,fill:true,backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,175);g.addColorStop(0,c.dark?'rgba(96,207,255,0.13)':'rgba(2,132,199,0.08)');g.addColorStop(1,'transparent');return g;}}]},options:{...base}});
+
+  // Price/candle sim
+  const closes=[182,185,181,188,191,187,194,197,195,200,203,200,206,210,207,214,211,218,222,219,226,230,227,233,237,234,240,238,244,248];
+  const ma10=closes.map((_,i)=>i<9?null:closes.slice(i-9,i+1).reduce((a,b)=>a+b,0)/10);
+  mk('chart-price',{type:'bar',data:{labels:closes.map((_,i)=>'D'+(i+1)),datasets:[{data:closes,backgroundColor:closes.map((v,i)=>i===0?c.g:v>closes[i-1]?'rgba(16,185,129,0.8)':'rgba(239,68,68,0.8)'),borderRadius:2},{type:'line',data:ma10,borderColor:c.p,borderWidth:2,pointRadius:0,tension:0.4,fill:false,spanGaps:true}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v}}}}});
+
+  // R:R break-even
+  mk('chart-rr',{type:'bar',data:{labels:['1:1','1:1.5','1:2','1:3','1:4','1:5'],datasets:[{data:[50,40,34,25,20,17],backgroundColor:['rgba(239,68,68,0.8)','rgba(245,158,11,0.7)','rgba(245,158,11,0.6)','rgba(16,185,129,0.7)','rgba(16,185,129,0.8)','rgba(16,185,129,0.9)'],borderRadius:6}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v+'%'}}}}});
+
+  // RSI
+  const rsiData=[42,45,52,60,68,72,75,71,65,58,50,44,38,32,28,35,42,50,58,65,70,74,68,60,52,45,38,32,30,42];
+  mk('chart-rsi',{type:'line',data:{labels:rsiData.map((_,i)=>'D'+(i+1)),datasets:[{label:'RSI',data:rsiData,borderColor:c.p,borderWidth:2.5,pointRadius:rsiData.map(v=>v>70||v<30?3:0),pointBackgroundColor:rsiData.map(v=>v>70?c.r:v<30?c.g:c.p),tension:0.4,fill:false}]},options:{...base,plugins:{...base.plugins},scales:{...base.scales,y:{...base.scales.y,min:0,max:100}}}});
+
+  // Fundamental bars
+  mk('chart-fundamental',{type:'bar',data:{labels:['2021','2022','2023','2024'],datasets:[{label:'High Growth Co.',data:[32,48,72,108],backgroundColor:c.dark?'rgba(96,207,255,0.8)':'rgba(2,132,199,0.75)',borderRadius:6},{label:'Slow Growth Co.',data:[28,31,34,37],backgroundColor:c.dark?'rgba(124,58,237,0.7)':'rgba(109,40,217,0.65)',borderRadius:6}]},options:{...base,plugins:{legend:{display:true,labels:{color:c.text,font:{size:11}}},tooltip:base.plugins.tooltip},scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>'$'+v+'B'}}}}});
+
+  // Emotion chart
+  mk('chart-emotion',{type:'line',data:{labels:['Open trade','Early gain','Peak optimism','First dip','Denial','Panic sell','Regret','Re-enter','Discipline'],datasets:[{data:[60,82,96,74,55,28,18,44,72],borderColor:c.a,borderWidth:2.5,pointRadius:3,pointBackgroundColor:c.a,tension:0.45,fill:true,backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,160);g.addColorStop(0,'rgba(245,158,11,0.12)');g.addColorStop(1,'transparent');return g;}}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,display:false}}}});
+}
+
+renderCharts();
+</script>
+</body>
+</html>

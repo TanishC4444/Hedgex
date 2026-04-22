@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulator — Hedgex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#080d14;--card:#0f1923;--card2:#131f2e;--border:#1a2840;--border2:#1f3050;--primary:#60cfff;--primary-dim:rgba(96,207,255,0.10);--violet:#7c3aed;--violet-dim:rgba(124,58,237,0.12);--green:#10b981;--green-dim:rgba(16,185,129,0.10);--red:#ef4444;--red-dim:rgba(239,68,68,0.10);--amber:#f59e0b;--amber-dim:rgba(245,158,11,0.10);--text:#ddeeff;--text2:#7a9fc0;--text3:#3d5a78;--heading:#eef6ff;--radius:14px;--nav-h:68px;}
+[data-theme="light"]{--bg:#f4f8ff;--card:#fff;--card2:#f0f7ff;--border:#d0e4f5;--border2:#b8d4ec;--primary:#0284c7;--primary-dim:rgba(2,132,199,0.07);--violet:#6d28d9;--violet-dim:rgba(109,40,217,0.08);--green:#059669;--green-dim:rgba(5,150,105,0.08);--red:#dc2626;--red-dim:rgba(220,38,38,0.07);--amber:#d97706;--amber-dim:rgba(217,119,6,0.08);--text:#1a3050;--text2:#3d6a96;--text3:#90b8d8;--heading:#0a1f38;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
+h1,h2,h3{font-family:'Syne',sans-serif;color:var(--heading);}
+a{text-decoration:none;color:inherit;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px;}
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--nav-h);background:rgba(8,13,20,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;}
+[data-theme="light"] .nav{background:rgba(244,248,255,0.9);}
+.nav-inner{width:100%;max-width:1400px;margin:0 auto;padding:0 24px;display:flex;align-items:center;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;background:linear-gradient(90deg,var(--primary),#b0eeff);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-0.02em;}
+.nav-links{display:flex;gap:2px;margin-left:auto;}
+.nav-links a{padding:7px 12px;border-radius:8px;font-size:0.87rem;font-weight:500;color:var(--text2);transition:color 0.2s,background 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--primary);background:var(--primary-dim);}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:14px;}
+.theme-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s;}
+.theme-btn:hover{border-color:var(--primary);color:var(--primary);}
+.page{padding-top:var(--nav-h);min-height:100vh;}
+.page-inner{max-width:1300px;margin:0 auto;padding:28px 24px 80px;}
+.page-head{margin-bottom:12px;}
+.page-head h1{font-size:1.65rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:4px;}
+.page-head p{font-size:0.88rem;color:var(--text2);}
+.sim-tabs{display:flex;gap:4px;margin-bottom:22px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content;}
+.sim-tab{padding:9px 22px;border-radius:7px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;color:var(--text2);border:none;background:transparent;transition:background 0.2s,color 0.2s;white-space:nowrap;display:flex;align-items:center;gap:7px;}
+.sim-tab.active{background:var(--primary-dim);color:var(--primary);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:18px;}
+.card-header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.card-title{font-family:'Syne',sans-serif;font-size:0.92rem;font-weight:700;}
+.card-body{padding:20px;}
+.card-note{font-size:0.76rem;color:var(--text3);}
+.form-row{display:flex;gap:12px;flex-wrap:wrap;align-items:end;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-label{font-size:0.71rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+.form-input,.form-select{padding:9px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;}
+.form-input:focus,.form-select:focus{border-color:var(--primary);}
+.form-input::placeholder{color:var(--text3);}
+.form-select option{background:var(--card);}
+.btn{padding:9px 20px;border-radius:8px;font-weight:600;font-size:0.87rem;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:opacity 0.2s,transform 0.15s;white-space:nowrap;}
+.btn:hover{opacity:0.85;transform:translateY(-1px);}
+.btn-primary{background:var(--primary);color:#05101a;}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary);}
+.btn-sm{padding:5px 12px;font-size:0.78rem;border-radius:6px;}
+/* Strategy grid */
+.strat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:14px 0;}
+.strat-card{padding:14px 16px;border-radius:10px;border:2px solid var(--border);background:var(--card2);cursor:pointer;transition:border-color 0.18s,background 0.18s;user-select:none;}
+.strat-card:hover{border-color:var(--border2);}
+.strat-card.sel{border-color:var(--primary);background:var(--primary-dim);}
+.strat-name{font-family:'Syne',sans-serif;font-size:0.86rem;font-weight:700;margin-bottom:4px;color:var(--heading);}
+.strat-tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:0.68rem;font-weight:700;margin-bottom:6px;letter-spacing:0.02em;}
+.tt{background:var(--primary-dim);color:var(--primary);}
+.tr{background:var(--violet-dim);color:var(--violet);}
+.tm{background:var(--amber-dim);color:var(--amber);}
+.tv{background:var(--green-dim);color:var(--green);}
+.tp{background:var(--red-dim);color:var(--red);}
+.strat-desc{font-size:0.78rem;color:var(--text2);line-height:1.5;}
+/* Progress */
+.prog-wrap{height:4px;border-radius:999px;background:var(--border);overflow:hidden;margin:10px 0;}
+.prog-fill{height:100%;border-radius:999px;background:var(--primary);width:0%;transition:width 0.07s linear;}
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+.stat-t{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:13px 15px;}
+.stat-t-lbl{font-size:0.69rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
+.stat-t-val{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;}
+.stat-t-sub{font-size:0.71rem;color:var(--text3);margin-top:3px;}
+/* Chart */
+.ch-wrap{border-radius:10px;overflow:hidden;margin-bottom:10px;}
+.ch-lg{height:300px;}
+.ch-sm{height:120px;}
+.legend{display:flex;gap:16px;font-size:0.79rem;color:var(--text2);margin-bottom:8px;flex-wrap:wrap;}
+.ldot{display:inline-block;width:13px;height:3px;border-radius:999px;vertical-align:middle;margin-right:4px;}
+/* Trade log */
+.log-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+.log-t{width:100%;border-collapse:collapse;font-size:0.8rem;}
+.log-t th{padding:8px 13px;text-align:left;font-size:0.69rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text3);border-bottom:1px solid var(--border);background:var(--card2);white-space:nowrap;}
+.log-t td{padding:8px 13px;border-bottom:1px solid var(--border);color:var(--text2);white-space:nowrap;}
+.log-t tr:last-child td{border-bottom:none;}
+.log-t tr:hover td{background:var(--card2);}
+.pill{display:inline-block;padding:2px 7px;border-radius:4px;font-size:0.72rem;font-weight:600;}
+.pb{background:var(--green-dim);color:var(--green);}
+.ps{background:var(--red-dim);color:var(--red);}
+.up{color:var(--green);font-weight:600;}
+.dn{color:var(--red);font-weight:600;}
+/* Fund */
+.preset-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+.preset-btn{padding:5px 13px;border-radius:6px;border:1px solid var(--border);background:var(--card2);color:var(--text2);font-size:0.78rem;font-weight:600;cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+.preset-btn:hover{border-color:var(--primary);color:var(--primary);}
+.ticker-chips{display:flex;flex-wrap:wrap;gap:7px;min-height:44px;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--card2);align-items:center;}
+.t-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;background:var(--primary-dim);border:1px solid var(--border2);color:var(--primary);font-family:'Syne',sans-serif;font-size:0.79rem;font-weight:700;}
+.t-chip button{background:none;border:none;color:inherit;cursor:pointer;font-size:0.88rem;padding:0;line-height:1;opacity:0.65;}
+.t-chip button:hover{opacity:1;}
+.date-toggle{display:flex;gap:6px;flex-wrap:wrap;}
+.date-preset{padding:5px 13px;border-radius:6px;border:1px solid var(--border);background:var(--card2);color:var(--text2);font-size:0.78rem;font-weight:600;cursor:pointer;transition:border-color 0.2s,color 0.2s,background 0.2s;}
+.date-preset.active{background:var(--primary-dim);color:var(--primary);border-color:var(--border2);}
+.fund-vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.fvs-c{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+.fvs-lbl{font-size:0.71rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.25);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@media(max-width:900px){.stats-grid{grid-template-columns:1fr 1fr;}.fund-vs{grid-template-columns:1fr;}.form-row{flex-direction:column;}}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr;}.strat-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Hedgex</a>
+    <div class="nav-links">
+      <a href="/">Home</a><a href="/learn">Learn</a><a href="/practice">Practice</a><a href="/simulator" class="active">Simulator</a><a href="/analysis">Analysis</a>
+    </div>
+    <div class="nav-right"><button class="theme-btn" id="themeBtn"><i class="fas fa-moon"></i></button></div>
+  </div>
+</nav>
+
+<div class="page"><div class="page-inner">
+  <div class="page-head">
+    <h1>Strategy Simulator</h1>
+    <p>Backtest real trading strategies on any stock, or build a custom fund and benchmark it against the S&P 500 — all using real Yahoo Finance data.</p>
+  </div>
+
+  <div class="sim-tabs">
+    <button class="sim-tab active" onclick="switchTab('bt',this)"><i class="fas fa-chart-line"></i>Strategy Backtester</button>
+    <button class="sim-tab" onclick="switchTab('fund',this)"><i class="fas fa-layer-group"></i>Fund Comparison</button>
+  </div>
+
+  <!-- ═══════════ TAB 1: BACKTESTER ═══════════ -->
+  <div id="tab-bt">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Configure</span>
+        <span class="card-note">Uses real daily closing prices from Yahoo Finance via /stock_chart</span>
+      </div>
+      <div class="card-body">
+        <div class="form-row" style="margin-bottom:18px;">
+          <div class="form-group">
+            <label class="form-label">Ticker</label>
+            <input class="form-input" id="bt-ticker" value="AAPL" placeholder="e.g. AAPL" style="width:100px;text-transform:uppercase;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Period</label>
+            <select class="form-select" id="bt-period">
+              <option value="1y">1 Year</option>
+              <option value="2y" selected>2 Years</option>
+              <option value="3y">3 Years</option>
+              <option value="5y">5 Years</option>
+              <option value="10y">10 Years</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Starting Capital</label>
+            <input type="number" class="form-input" id="bt-capital" value="100000" step="5000" style="width:130px;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Risk Per Trade</label>
+            <select class="form-select" id="bt-risk">
+              <option value="1">1% of portfolio</option>
+              <option value="2" selected>2% of portfolio</option>
+              <option value="5">5% of portfolio</option>
+              <option value="10">10% of portfolio</option>
+              <option value="100">All-in</option>
+            </select>
+          </div>
+          <div class="form-group" style="align-self:end;">
+            <button class="btn btn-primary" id="bt-btn" onclick="runBacktest()"><i class="fas fa-play"></i>Run Backtest</button>
+          </div>
+        </div>
+
+        <div class="form-label" style="margin-bottom:10px;">Select Strategy</div>
+        <div class="strat-grid">
+          <div class="strat-card sel" data-s="ma_crossover" onclick="selStrat(this)">
+            <div class="strat-name">MA Crossover (20/50)</div><span class="strat-tag tt">Trend Following</span>
+            <div class="strat-desc">Buy when the 20-day MA crosses above the 50-day. Sell on cross below. The most widely used systematic trend strategy.</div>
+          </div>
+          <div class="strat-card" data-s="ma_crossover_long" onclick="selStrat(this)">
+            <div class="strat-name">Golden/Death Cross (50/200)</div><span class="strat-tag tt">Trend Following</span>
+            <div class="strat-desc">Buy on 50MA crossing above 200MA ("Golden Cross"). Sell on cross below ("Death Cross"). Slow, long-term signal watched by institutions.</div>
+          </div>
+          <div class="strat-card" data-s="rsi_reversal" onclick="selStrat(this)">
+            <div class="strat-name">RSI Reversal (30/70)</div><span class="strat-tag tr">Mean Reversion</span>
+            <div class="strat-desc">Buy when RSI-14 drops below 30 (oversold). Sell when RSI rises above 70 (overbought). Works best in sideways, range-bound markets.</div>
+          </div>
+          <div class="strat-card" data-s="rsi_trend" onclick="selStrat(this)">
+            <div class="strat-name">RSI Trend Filter</div><span class="strat-tag tt">Trend + Momentum</span>
+            <div class="strat-desc">Only enter when RSI is 40–60 AND price is above the 50-day MA. Combines trend direction with momentum to filter false entries.</div>
+          </div>
+          <div class="strat-card" data-s="macd" onclick="selStrat(this)">
+            <div class="strat-name">MACD Signal Cross</div><span class="strat-tag tt">Trend + Momentum</span>
+            <div class="strat-desc">Buy when MACD line (12/26 EMA) crosses above the signal line (9-day EMA). Sell on cross below. Classic momentum-trend combo indicator.</div>
+          </div>
+          <div class="strat-card" data-s="momentum" onclick="selStrat(this)">
+            <div class="strat-name">Momentum Breakout (20-day)</div><span class="strat-tag tm">Momentum</span>
+            <div class="strat-desc">Buy when price makes a new 20-day high. Exit when price falls 7% below the recent peak (trailing stop). Chases stocks making new highs.</div>
+          </div>
+          <div class="strat-card" data-s="mean_revert" onclick="selStrat(this)">
+            <div class="strat-name">Bollinger Band Reversion</div><span class="strat-tag tr">Mean Reversion</span>
+            <div class="strat-desc">Buy when price closes below the lower Bollinger Band (20-day MA minus 2 std dev). Exit when price returns to the 20-day MA center.</div>
+          </div>
+          <div class="strat-card" data-s="vol_breakout" onclick="selStrat(this)">
+            <div class="strat-name">Volatility Breakout (ATR)</div><span class="strat-tag tv">Volatility</span>
+            <div class="strat-desc">Buy when price surges more than 1.5× the 14-day Average True Range in one session — a volatility expansion signal. Exits at 2× ATR stop loss.</div>
+          </div>
+          <div class="strat-card" data-s="dca" onclick="selStrat(this)">
+            <div class="strat-name">Dollar Cost Averaging</div><span class="strat-tag tv">Passive</span>
+            <div class="strat-desc">Invest a fixed amount every 20 trading days regardless of price. Removes timing risk. Compare this to lump-sum Buy &amp; Hold to see which wins.</div>
+          </div>
+          <div class="strat-card" data-s="buy_hold" onclick="selStrat(this)">
+            <div class="strat-name">Buy &amp; Hold (Benchmark)</div><span class="strat-tag tt">Benchmark</span>
+            <div class="strat-desc">Buy the full position on day one and hold to period end. The gold standard benchmark — most active strategies fail to beat this long-term.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="bt-prog" style="display:none;" class="card">
+      <div class="card-body" style="padding:14px 20px;">
+        <div style="font-size:0.84rem;color:var(--text2);margin-bottom:8px;" id="bt-status">Fetching data...</div>
+        <div class="prog-wrap"><div class="prog-fill" id="bt-pf"></div></div>
+      </div>
+    </div>
+
+    <div id="bt-results" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" id="bt-rtitle">Results</span>
+          <span class="card-note" id="bt-rmeta"></span>
+        </div>
+        <div class="card-body">
+          <div class="stats-grid" id="bt-stats"></div>
+          <div class="legend">
+            <span><span class="ldot" style="background:var(--green);"></span>Strategy</span>
+            <span><span class="ldot" style="background:var(--text3);border-top:1px dashed;"></span>Buy &amp; Hold</span>
+          </div>
+          <div class="ch-wrap ch-lg"><canvas id="bt-chart"></canvas></div>
+          <div style="font-size:0.73rem;color:var(--text3);text-align:center;margin:4px 0;">Drawdown from Peak</div>
+          <div class="ch-wrap ch-sm"><canvas id="bt-dd"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Trade Log</span><span class="card-note" id="bt-tcount"></span></div>
+        <div class="log-wrap"><table class="log-t">
+          <thead><tr><th>Date</th><th>Action</th><th>Price</th><th>Shares</th><th>Value</th><th>P&L</th><th>Ret</th><th>Portfolio</th></tr></thead>
+          <tbody id="bt-trades"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div><!-- /tab-bt -->
+
+
+  <!-- ═══════════ TAB 2: FUND COMPARISON ═══════════ -->
+  <div id="tab-fund" style="display:none;">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Build Your Fund</span>
+        <span class="card-note">Weighted basket of stocks — compared against SPY (S&P 500)</span>
+      </div>
+      <div class="card-body">
+        <div class="form-label" style="margin-bottom:8px;">Quick Presets</div>
+        <div class="preset-row">
+          <button class="preset-btn" onclick="loadPreset('mag7')">Magnificent 7</button>
+          <button class="preset-btn" onclick="loadPreset('faang')">FAANG+</button>
+          <button class="preset-btn" onclick="loadPreset('chips')">Semiconductors</button>
+          <button class="preset-btn" onclick="loadPreset('divgrowth')">Dividend Growth</button>
+          <button class="preset-btn" onclick="loadPreset('energy')">Energy</button>
+          <button class="preset-btn" onclick="loadPreset('finance')">Big Banks</button>
+          <button class="preset-btn" onclick="loadPreset('healthcare')">Healthcare</button>
+          <button class="preset-btn" onclick="loadPreset('custom')">Clear</button>
+        </div>
+
+        <div class="form-label" style="margin-bottom:6px;">Holdings (max 20 tickers — right-click a chip to remove)</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">
+          <input class="form-input" id="fund-ti" placeholder="Ticker" maxlength="8" style="width:110px;text-transform:uppercase;" onkeydown="if(event.key==='Enter')addTicker()">
+          <input type="number" class="form-input" id="fund-wi" placeholder="Weight %" min="1" max="100" value="10" style="width:90px;">
+          <button class="btn btn-ghost btn-sm" onclick="addTicker()"><i class="fas fa-plus"></i> Add</button>
+          <button class="btn btn-ghost btn-sm" onclick="equalW()">Equal Weight</button>
+        </div>
+        <div class="ticker-chips" id="fund-chips"><span style="color:var(--text3);font-size:0.81rem;">Add tickers above or choose a preset...</span></div>
+        <div style="font-size:0.74rem;margin-top:6px;" id="fund-wt">Total weight: 0%</div>
+
+        <div style="margin-top:18px;">
+          <div class="form-label" style="margin-bottom:8px;">Time Range</div>
+          <div class="date-toggle" id="date-presets">
+            <button class="date-preset" onclick="setP('1y',this)">1 Year</button>
+            <button class="date-preset active" onclick="setP('2y',this)">2 Years</button>
+            <button class="date-preset" onclick="setP('3y',this)">3 Years</button>
+            <button class="date-preset" onclick="setP('5y',this)">5 Years</button>
+            <button class="date-preset" onclick="setP('10y',this)">10 Years</button>
+            <button class="date-preset" onclick="setP('custom',this)">Custom Dates</button>
+          </div>
+          <div id="custom-dates" style="display:none;gap:12px;margin-top:10px;flex-wrap:wrap;">
+            <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-input" id="fund-start" style="width:160px;"></div>
+            <div class="form-group"><label class="form-label">End Date</label><input type="date" class="form-input" id="fund-end" style="width:160px;"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="fund-btn" onclick="runFund()"><i class="fas fa-chart-bar"></i>Run Comparison</button>
+          <span style="font-size:0.79rem;color:var(--text3);">Benchmark: SPY (S&P 500 ETF)</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="fund-prog" style="display:none;" class="card">
+      <div class="card-body" style="padding:14px 20px;">
+        <div style="font-size:0.84rem;color:var(--text2);margin-bottom:8px;" id="fund-status">Fetching data...</div>
+        <div class="prog-wrap"><div class="prog-fill" id="fund-pf"></div></div>
+      </div>
+    </div>
+
+    <div id="fund-results" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" id="fund-rtitle">Fund vs S&P 500</span>
+          <span class="card-note" id="fund-rmeta"></span>
+        </div>
+        <div class="card-body">
+          <div class="fund-vs" id="fund-vs"></div>
+          <div class="stats-grid" id="fund-stats"></div>
+          <div class="legend">
+            <span><span class="ldot" style="background:var(--primary);"></span>Your Fund</span>
+            <span><span class="ldot" style="background:var(--amber);"></span>SPY (S&P 500)</span>
+          </div>
+          <div class="ch-wrap ch-lg"><canvas id="fund-chart"></canvas></div>
+          <div style="font-size:0.73rem;color:var(--text3);text-align:center;margin:4px 0;">Alpha — Fund cumulative return minus SPY cumulative return</div>
+          <div class="ch-wrap ch-sm"><canvas id="fund-rel"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Holdings Breakdown</span><span class="card-note">Individual performance vs SPY over the same period</span></div>
+        <div class="log-wrap"><table class="log-t">
+          <thead><tr><th>Ticker</th><th>Weight</th><th>Start</th><th>End</th><th>Return</th><th>vs SPY</th><th>Fund Contribution</th></tr></thead>
+          <tbody id="fund-rows"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div><!-- /tab-fund -->
+
+</div></div><!-- /page-inner /page -->
+
+<script>
+// ── THEME ──
+const themeBtn=document.getElementById('themeBtn');
+const html=document.documentElement;
+(()=>{const s=localStorage.getItem('hx-theme');if(s)html.setAttribute('data-theme',s);else if(window.matchMedia('(prefers-color-scheme:light)').matches)html.setAttribute('data-theme','light');})();
+function applyTheme(){themeBtn.innerHTML=html.getAttribute('data-theme')==='dark'?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';}
+applyTheme();
+themeBtn.addEventListener('click',()=>{const t=html.getAttribute('data-theme')==='dark'?'light':'dark';html.setAttribute('data-theme',t);localStorage.setItem('hx-theme',t);applyTheme();});
+
+// ── TABS ──
+function switchTab(id,el){
+  document.querySelectorAll('.sim-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-bt').style.display=id==='bt'?'':'none';
+  document.getElementById('tab-fund').style.display=id==='fund'?'':'none';
+}
+
+// ── STRATEGY SELECTION ──
+let selectedStrat='ma_crossover';
+function selStrat(el){
+  document.querySelectorAll('.strat-card').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedStrat=el.getAttribute('data-s');
+}
+
+// ── MATH HELPERS ──
+function sma(d,w){return d.map((_,i)=>i<w-1?null:d.slice(i-w+1,i+1).reduce((a,b)=>a+b,0)/w);}
+function ema(d,sp){const k=2/(sp+1),o=[];d.forEach((v,i)=>o.push(i===0?v:v*k+o[i-1]*(1-k)));return o;}
+function rsi(prices,per=14){
+  const o=Array(per).fill(50);
+  if(prices.length<=per) return prices.map(()=>50);
+  let ag=0,al=0;
+  for(let i=1;i<=per;i++){const d=prices[i]-prices[i-1];ag+=Math.max(0,d)/per;al+=Math.max(0,-d)/per;}
+  o.push(al===0?100:100-100/(1+ag/al));
+  for(let i=per+1;i<prices.length;i++){const d=prices[i]-prices[i-1];ag=(ag*(per-1)+Math.max(0,d))/per;al=(al*(per-1)+Math.max(0,-d))/per;o.push(al===0?100:100-100/(1+ag/al));}
+  return o;
+}
+function macdCalc(p){const e12=ema(p,12),e26=ema(p,26),line=p.map((_,i)=>e12[i]-e26[i]),sig=ema(line,9);return{line,sig};}
+
+// ── STRATEGY ENGINE ──
+function runStrategy(strat,prices,timestamps,capital,riskPct){
+  const ma20=sma(prices,20),ma50=sma(prices,50),ma200=sma(prices,200);
+  const rsiD=rsi(prices);
+  const {line:ml,sig:ms}=macdCalc(prices);
+  let cash=capital,shares=0,entry=0,peak=0;
+  const pv=[capital],trades=[];
+
+  for(let i=1;i<prices.length;i++){
+    const port=cash+shares*prices[i];
+    let sig=null;
+
+    if(strat==='buy_hold'){
+      if(i===1){shares=Math.floor(capital/prices[1]);cash=capital-shares*prices[1];trades.push({date:timestamps[1],act:'BUY',px:prices[1],sh:shares,val:shares*prices[1],pl:0,ret:0,port:cash+shares*prices[1]});}
+    } else if(strat==='ma_crossover'){
+      if(ma20[i]&&ma50[i]&&ma20[i-1]&&ma50[i-1]){if(ma20[i]>ma50[i]&&ma20[i-1]<=ma50[i-1])sig='buy';if(ma20[i]<ma50[i]&&ma20[i-1]>=ma50[i-1])sig='sell';}
+    } else if(strat==='ma_crossover_long'){
+      if(ma50[i]&&ma200[i]&&ma50[i-1]&&ma200[i-1]){if(ma50[i]>ma200[i]&&ma50[i-1]<=ma200[i-1])sig='buy';if(ma50[i]<ma200[i]&&ma50[i-1]>=ma200[i-1])sig='sell';}
+    } else if(strat==='rsi_reversal'){
+      if(rsiD[i]<30&&shares===0)sig='buy';
+      if(rsiD[i]>70&&shares>0)sig='sell';
+    } else if(strat==='rsi_trend'){
+      const abv=ma50[i]&&prices[i]>ma50[i];
+      if(rsiD[i]>=40&&rsiD[i]<=60&&abv&&shares===0)sig='buy';
+      if((rsiD[i]>70||!abv)&&shares>0)sig='sell';
+    } else if(strat==='macd'){
+      if(ml[i]>ms[i]&&ml[i-1]<=ms[i-1]&&shares===0)sig='buy';
+      if(ml[i]<ms[i]&&ml[i-1]>=ms[i-1]&&shares>0)sig='sell';
+    } else if(strat==='momentum'){
+      const hi=Math.max(...prices.slice(Math.max(0,i-20),i));
+      if(prices[i]>=hi&&shares===0)sig='buy';
+      if(shares>0){peak=Math.max(peak,prices[i]);if(prices[i]<peak*0.93)sig='sell';}
+    } else if(strat==='mean_revert'){
+      const sl=prices.slice(Math.max(0,i-20),i);
+      const avg=sl.reduce((a,b)=>a+b,0)/sl.length;
+      const std=Math.sqrt(sl.map(v=>(v-avg)**2).reduce((a,b)=>a+b,0)/sl.length)||1;
+      if(prices[i]<avg-2*std&&shares===0)sig='buy';
+      if(prices[i]>avg&&shares>0)sig='sell';
+    } else if(strat==='vol_breakout'){
+      // Simple ATR proxy: daily range vs rolling avg range
+      const ranges=prices.slice(Math.max(0,i-14),i).map((p,j,a)=>j===0?0:Math.abs(p-a[j-1]));
+      const avgR=ranges.length>1?ranges.reduce((a,b)=>a+b,0)/ranges.length:0;
+      if(avgR>0&&Math.abs(prices[i]-prices[i-1])>1.5*avgR&&prices[i]>prices[i-1]&&shares===0)sig='buy';
+      if(shares>0&&prices[i]<entry-2*(prices.slice(Math.max(0,i-14),i).map((p,j,a)=>j===0?0:Math.abs(p-a[j-1])).reduce((a,b)=>a+b,1)/14))sig='sell';
+    } else if(strat==='dca'){
+      if(i%20===0){
+        const invest=Math.min(port*(riskPct===100?0.15:riskPct/100)*4,cash);
+        const sh=Math.max(1,Math.floor(invest/prices[i]));
+        if(cash>=sh*prices[i]){shares+=sh;cash-=sh*prices[i];trades.push({date:timestamps[i],act:'BUY (DCA)',px:prices[i],sh,val:sh*prices[i],pl:0,ret:0,port:cash+shares*prices[i]});}
+      }
+    }
+
+    if(sig==='buy'&&cash>prices[i]){
+      const rp=riskPct===100?1:riskPct/100;
+      const sh=Math.max(1,Math.floor(port*rp/prices[i]));
+      const cost=sh*prices[i];
+      if(cash>=cost){shares=sh;cash-=cost;entry=prices[i];peak=prices[i];trades.push({date:timestamps[i],act:'BUY',px:prices[i],sh,val:cost,pl:0,ret:0,port:cash+shares*prices[i]});}
+    } else if(sig==='sell'&&shares>0){
+      const pl=(prices[i]-entry)*shares,ret=(prices[i]-entry)/entry*100,proc=shares*prices[i];
+      trades.push({date:timestamps[i],act:'SELL',px:prices[i],sh:shares,val:proc,pl,ret,port:cash+proc});
+      cash+=proc;shares=0;
+    }
+    pv.push(parseFloat((cash+shares*prices[i]).toFixed(2)));
+  }
+
+  // Close open at end
+  if(shares>0){
+    const lp=prices[prices.length-1],pl=(lp-entry)*shares,ret=(lp-entry)/entry*100;
+    trades.push({date:timestamps[timestamps.length-1],act:'SELL (end)',px:lp,sh:shares,val:shares*lp,pl,ret,port:cash+shares*lp});
+    cash+=shares*lp;
+  }
+  while(pv.length>prices.length)pv.pop();
+  return{pv,trades};
+}
+
+function calcStats(pv,cap){
+  const fin=pv[pv.length-1],ret=(fin-cap)/cap*100;
+  let peak=pv[0],dd=0;
+  const ddV=pv.map(v=>{peak=Math.max(peak,v);const d=(v-peak)/peak*100;dd=Math.min(dd,d);return d;});
+  const rets=pv.slice(1).map((v,i)=>(v-pv[i])/pv[i]);
+  const avg=rets.reduce((a,b)=>a+b,0)/rets.length||0;
+  const std=Math.sqrt(rets.map(r=>(r-avg)**2).reduce((a,b)=>a+b,0)/rets.length)||0.0001;
+  const sharpe=(avg*252)/(std*Math.sqrt(252));
+  return{fin,ret,dd,sharpe,ddV};
+}
+
+function fmtD(ts){if(!ts)return '';const d=ts.split(' ')[0].split('-');return d[1]+'/'+d[2];}
+function fmtDYear(ts){if(!ts)return '';const d=ts.split(' ')[0].split('-');return d[1]+'/'+d[2]+'/'+d[0].slice(2);}
+function makeYearLabels(tsArr){
+  // For chart x-axis: show MM/DD normally, but inject year label when year changes
+  let lastYear='';
+  return tsArr.map(ts=>{
+    if(!ts)return '';
+    const parts=ts.split(' ')[0].split('-');
+    const yr=parts[0],mo=parts[1],dy=parts[2];
+    if(yr!==lastYear){lastYear=yr;return mo+'/'+dy+' \''+yr.slice(2);}
+    return mo+'/'+dy;
+  });
+}
+function stride(n){return Math.max(1,Math.ceil(n/80));}
+function dark(){return html.getAttribute('data-theme')==='dark';}
+function chartColors(){return{grid:dark()?'rgba(26,40,64,0.7)':'rgba(200,225,245,0.5)',tc:dark()?'#3d5a78':'#90b8d8'};}
+
+// ── BACKTESTER RUN ──
+let btC=null,btDD=null;
+const STRAT_NAMES={ma_crossover:'MA Crossover 20/50',ma_crossover_long:'Golden/Death Cross 50/200',rsi_reversal:'RSI Reversal',rsi_trend:'RSI Trend Filter',macd:'MACD Signal',momentum:'Momentum Breakout',mean_revert:'Bollinger Reversion',vol_breakout:'Volatility Breakout',dca:'Dollar Cost Averaging',buy_hold:'Buy & Hold'};
+
+async function runBacktest(){
+  const ticker=(document.getElementById('bt-ticker').value||'AAPL').trim().toUpperCase();
+  const period=document.getElementById('bt-period').value;
+  const capital=parseFloat(document.getElementById('bt-capital').value)||100000;
+  const riskPct=parseFloat(document.getElementById('bt-risk').value);
+  const btn=document.getElementById('bt-btn');
+  btn.innerHTML='<span class="spinner"></span> Fetching...';btn.disabled=true;
+  document.getElementById('bt-prog').style.display='';
+  document.getElementById('bt-results').style.display='none';
+  document.getElementById('bt-status').textContent='Fetching real closing prices from Yahoo Finance...';
+  const pf=document.getElementById('bt-pf');pf.style.width='8%';
+  let p=8;const pi=setInterval(()=>{p=Math.min(p+2,82);pf.style.width=p+'%';},120);
+
+  let prices,timestamps;
+  try{
+    const r=await fetch(`/stock_chart?ticker=${ticker}&period=${period}&interval=1d`);
+    const d=await r.json();
+    if(!d.prices||d.prices.length<60)throw new Error(`Not enough data for ${ticker} (${period}). Try shorter period or different ticker.`);
+    prices=d.prices;timestamps=d.timestamps;
+  }catch(e){clearInterval(pi);btn.innerHTML='<i class="fas fa-play"></i>Run Backtest';btn.disabled=false;document.getElementById('bt-prog').style.display='none';alert(e.message);return;}
+
+  clearInterval(pi);pf.style.width='95%';
+  document.getElementById('bt-status').textContent='Running strategy on '+prices.length+' trading days...';
+  await new Promise(r=>setTimeout(r,60));
+
+  const{pv,trades}=runStrategy(selectedStrat,prices,timestamps,capital,riskPct);
+  const bhSh=Math.floor(capital/prices[0]),bhC2=capital-bhSh*prices[0];
+  const bhVals=prices.map(p=>parseFloat((bhC2+bhSh*p).toFixed(2)));
+  const st=calcStats(pv,capital),bh=calcStats(bhVals,capital);
+  const sells=trades.filter(t=>t.act.includes('SELL'));
+  const wins=sells.filter(t=>t.pl>0);
+  const wr=sells.length>0?wins.length/sells.length*100:0;
+
+  pf.style.width='100%';
+  document.getElementById('bt-prog').style.display='none';
+  document.getElementById('bt-results').style.display='';
+  document.getElementById('bt-rtitle').textContent=`${STRAT_NAMES[selectedStrat]||selectedStrat} — ${ticker}`;
+  document.getElementById('bt-rmeta').textContent=`${period} · ${prices.length} trading days · $${capital.toLocaleString()} capital`;
+
+  const c=v=>v>=0?'var(--green)':'var(--red)',s=v=>v>=0?'+':'';
+  document.getElementById('bt-stats').innerHTML=[
+    ['Total Return',`${s(st.ret)}${st.ret.toFixed(1)}%`,c(st.ret),`Final: $${st.fin.toLocaleString(undefined,{maximumFractionDigits:0})}`],
+    ['vs Buy & Hold',`${s(st.ret-bh.ret)}${(st.ret-bh.ret).toFixed(1)}%`,c(st.ret-bh.ret),`B&H: ${s(bh.ret)}${bh.ret.toFixed(1)}%`],
+    ['Win Rate',sells.length?`${wr.toFixed(0)}%`:'N/A',wr>=50?'var(--green)':'var(--amber)',`${wins.length} wins / ${sells.length} exits`],
+    ['Max Drawdown',`${st.dd.toFixed(1)}%`,'var(--red)','Worst peak-to-trough'],
+    ['Sharpe Ratio',st.sharpe.toFixed(2),st.sharpe>1?'var(--green)':st.sharpe>0?'var(--amber)':'var(--red)','Annualized risk-adjusted'],
+    ['Trades',trades.length.toString(),'var(--text)',`${prices.length} days ${ticker} real data`],
+  ].map(([l,v,col,sub])=>`<div class="stat-t"><div class="stat-t-lbl">${l}</div><div class="stat-t-val" style="color:${col};">${v}</div><div class="stat-t-sub">${sub}</div></div>`).join('');
+
+  const sr=stride(pv.length),labels=makeYearLabels(timestamps.filter((_,i)=>i%sr===0));
+  const sv=pv.filter((_,i)=>i%sr===0),bv=bhVals.filter((_,i)=>i%sr===0),ddv=st.ddV.filter((_,i)=>i%sr===0);
+  const{grid,tc}=chartColors();
+
+  if(btC)btC.destroy();
+  btC=new Chart(document.getElementById('bt-chart').getContext('2d'),{type:'line',data:{labels,datasets:[
+    {label:'Strategy',data:sv,borderColor:'#10b981',borderWidth:2.5,pointRadius:0,tension:0.2,fill:true,backgroundColor:ctx=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,280);g.addColorStop(0,'rgba(16,185,129,0.12)');g.addColorStop(1,'transparent');return g;}},
+    {label:'Buy & Hold',data:bv,borderColor:tc,borderWidth:1.5,borderDash:[5,4],pointRadius:0,tension:0.2,fill:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#0f1923',bodyColor:'#ddeeff',cornerRadius:8,padding:10,callbacks:{label:ctx=>ctx.dataset.label+': $'+ctx.raw.toLocaleString(undefined,{maximumFractionDigits:0})}}},scales:{x:{border:{display:false},grid:{color:grid},ticks:{color:tc,font:{size:10},maxTicksLimit:10,maxRotation:0}},y:{border:{display:false},grid:{color:grid},ticks:{color:tc,font:{size:10},callback:v=>'$'+v.toLocaleString(undefined,{maximumFractionDigits:0})}}}}});
+
+  if(btDD)btDD.destroy();
+  btDD=new Chart(document.getElementById('bt-dd').getContext('2d'),{type:'line',data:{labels,datasets:[{data:ddv,borderColor:'#ef4444',borderWidth:1.5,pointRadius:0,tension:0.2,fill:true,backgroundColor:ctx=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,110);g.addColorStop(0,'rgba(239,68,68,0.12)');g.addColorStop(1,'transparent');return g;}}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#0f1923',bodyColor:'#ddeeff',cornerRadius:8,padding:8,callbacks:{label:ctx=>ctx.raw.toFixed(1)+'%'}}},scales:{x:{border:{display:false},grid:{display:false},ticks:{color:tc,font:{size:10},maxTicksLimit:6,maxRotation:0}},y:{border:{display:false},grid:{color:grid},ticks:{color:tc,font:{size:10},callback:v=>v.toFixed(1)+'%'}}}}});
+
+  document.getElementById('bt-tcount').textContent=`${trades.length} total · showing first 50`;
+  document.getElementById('bt-trades').innerHTML=trades.slice(0,50).map(t=>{
+    const isBuy=t.act.includes('BUY');
+    return `<tr>
+      <td>${fmtD(t.date)||t.date}</td>
+      <td><span class="pill ${isBuy?'pb':'ps'}">${t.act}</span></td>
+      <td>$${parseFloat(t.px).toFixed(2)}</td>
+      <td>${t.sh}</td>
+      <td>$${parseFloat(t.val).toLocaleString(undefined,{maximumFractionDigits:0})}</td>
+      <td class="${t.pl>=0?'up':'dn'}">${t.pl!==0?(t.pl>=0?'+':'-')+'$'+Math.abs(t.pl).toFixed(0):'—'}</td>
+      <td class="${t.ret>=0?'up':'dn'}">${t.ret!==0?(t.ret>=0?'+':'-')+Math.abs(t.ret).toFixed(1)+'%':'—'}</td>
+      <td>$${parseFloat(t.port).toLocaleString(undefined,{maximumFractionDigits:0})}</td>
+    </tr>`;
+  }).join('');
+
+  btn.innerHTML='<i class="fas fa-play"></i>Run Backtest';btn.disabled=false;
+  document.getElementById('bt-results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+
+// ═══════════ FUND COMPARISON ═══════════
+let fundTickers=[],fundPeriod='2y',fundC=null,fundRel=null;
+const PRESETS={
+  mag7:[{t:'AAPL',w:15},{t:'MSFT',w:15},{t:'NVDA',w:15},{t:'AMZN',w:14},{t:'META',w:14},{t:'GOOGL',w:14},{t:'TSLA',w:13}],
+  faang:[{t:'META',w:20},{t:'AMZN',w:20},{t:'AAPL',w:20},{t:'NFLX',w:20},{t:'GOOGL',w:20}],
+  chips:[{t:'NVDA',w:25},{t:'AMD',w:20},{t:'INTC',w:20},{t:'QCOM',w:20},{t:'AVGO',w:15}],
+  divgrowth:[{t:'JNJ',w:15},{t:'PG',w:15},{t:'KO',w:14},{t:'PEP',w:14},{t:'VZ',w:10},{t:'T',w:10},{t:'MCD',w:11},{t:'MMM',w:11}],
+  energy:[{t:'XOM',w:25},{t:'CVX',w:25},{t:'COP',w:20},{t:'SLB',w:15},{t:'MPC',w:15}],
+  finance:[{t:'JPM',w:25},{t:'BAC',w:25},{t:'WFC',w:20},{t:'GS',w:15},{t:'MS',w:15}],
+  healthcare:[{t:'UNH',w:25},{t:'JNJ',w:20},{t:'LLY',w:20},{t:'PFE',w:15},{t:'ABBV',w:20}],
+  custom:[]
+};
+
+function loadPreset(n){fundTickers=[...PRESETS[n].map(p=>({ticker:p.t,weight:p.w}))];renderChips();}
+function addTicker(){
+  const t=document.getElementById('fund-ti').value.trim().toUpperCase();
+  const w=parseFloat(document.getElementById('fund-wi').value)||10;
+  if(!t)return;
+  if(fundTickers.length>=20){alert('Max 20 tickers');return;}
+  if(fundTickers.find(x=>x.ticker===t)){alert(t+' already added');return;}
+  fundTickers.push({ticker:t,weight:w});
+  document.getElementById('fund-ti').value='';
+  renderChips();
+}
+function removeTicker(i){fundTickers.splice(i,1);renderChips();}
+function equalW(){if(!fundTickers.length)return;const w=parseFloat((100/fundTickers.length).toFixed(1));fundTickers=fundTickers.map(t=>({...t,weight:w}));renderChips();}
+function renderChips(){
+  const el=document.getElementById('fund-chips');
+  if(!fundTickers.length){el.innerHTML='<span style="color:var(--text3);font-size:0.81rem;">Add tickers above or choose a preset...</span>';document.getElementById('fund-wt').textContent='Total weight: 0%';return;}
+  el.innerHTML=fundTickers.map((t,i)=>`<span class="t-chip">${t.ticker} <span style="font-weight:400;font-size:0.73rem;">${t.weight}%</span><button onclick="removeTicker(${i})" title="Remove">×</button></span>`).join('');
+  const tot=fundTickers.reduce((s,t)=>s+t.weight,0);
+  const col=Math.abs(tot-100)<0.5?'var(--green)':tot>100?'var(--red)':'var(--amber)';
+  document.getElementById('fund-wt').innerHTML=`Total weight: <strong style="color:${col};">${tot.toFixed(1)}%</strong>${Math.abs(tot-100)>0.5?' — must total 100%':''}`;
+}
+function setP(val,el){
+  document.querySelectorAll('.date-preset').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  fundPeriod=val;
+  document.getElementById('custom-dates').style.display=val==='custom'?'flex':'none';
+}
+
+async function runFund(){
+  const tot=fundTickers.reduce((s,t)=>s+t.weight,0);
+  if(!fundTickers.length){alert('Add at least one ticker first');return;}
+  if(Math.abs(tot-100)>1){alert(`Weights must total 100% (currently ${tot.toFixed(1)}%)`);return;}
+  if(fundPeriod==='custom'){const s=document.getElementById('fund-start').value,e=document.getElementById('fund-end').value;if(!s||!e){alert('Enter start and end dates');return;}}
+
+  const btn=document.getElementById('fund-btn');
+  btn.innerHTML='<span class="spinner"></span> Fetching...';btn.disabled=true;
+  document.getElementById('fund-prog').style.display='';
+  document.getElementById('fund-results').style.display='none';
+  const pf=document.getElementById('fund-pf');pf.style.width='0%';
+
+  const allTickers=[...fundTickers.map(t=>t.ticker),'SPY'];
+  const priceData={};
+
+  for(let i=0;i<allTickers.length;i++){
+    const t=allTickers[i];
+    document.getElementById('fund-status').textContent=`Fetching ${t} (${i+1}/${allTickers.length})...`;
+    pf.style.width=Math.round(i/allTickers.length*88)+'%';
+    try{
+      // Use custom date range if set, otherwise use period
+      let url;
+      if(fundPeriod==='custom'){
+        const s=document.getElementById('fund-start').value,e=document.getElementById('fund-end').value;
+        url=`/fund_chart?ticker=${t}&start=${s}&end=${e}&interval=1d`;
+      } else {
+        url=`/stock_chart?ticker=${t}&period=${fundPeriod}&interval=1d`;
+      }
+      const r=await fetch(url);
+      const d=await r.json();
+      if(d.prices&&d.prices.length>5)priceData[t]={prices:d.prices,timestamps:d.timestamps};
+    }catch(e){console.warn('Failed',t);}
+    await new Promise(r=>setTimeout(r,60));
+  }
+
+  const spy=priceData['SPY'];
+  if(!spy||spy.prices.length<10){alert('Could not load SPY data. Check your connection.');btn.innerHTML='<i class="fas fa-chart-bar"></i>Run Comparison';btn.disabled=false;document.getElementById('fund-prog').style.display='none';return;}
+
+  pf.style.width='100%';
+  document.getElementById('fund-status').textContent='Computing returns...';
+  await new Promise(r=>setTimeout(r,50));
+
+  const n=spy.prices.length,spyP=spy.prices,spyTs=spy.timestamps;
+  const spyCum=spyP.map(v=>(v-spyP[0])/spyP[0]*100);
+  const spyFinal=spyCum[n-1];
+
+  const validT=[];
+  const tRets={};
+  const totalW=fundTickers.reduce((s,t)=>s+t.weight,0);
+
+  for(const{ticker,weight}of fundTickers){
+    if(!priceData[ticker])continue;
+    const p=priceData[ticker].prices;
+    if(p.length<5)continue;
+    // Resample to SPY length
+    const sampled=Array.from({length:n},(_,i)=>p[Math.min(Math.round(i*(p.length-1)/(n-1)),p.length-1)]);
+    const cum=sampled.map(v=>(v-sampled[0])/sampled[0]*100);
+    tRets[ticker]={cum,startP:sampled[0],endP:sampled[n-1],weight};
+    validT.push({ticker,weight});
+  }
+
+  if(!validT.length){alert('No valid data for any tickers.');btn.innerHTML='<i class="fas fa-chart-bar"></i>Run Comparison';btn.disabled=false;document.getElementById('fund-prog').style.display='none';return;}
+
+  const vTotW=validT.reduce((s,t)=>s+t.weight,0);
+  const fundCum=Array.from({length:n},(_,i)=>validT.reduce((sum,{ticker,weight})=>sum+(tRets[ticker]?.cum[i]||0)*weight/vTotW,0));
+  const relPerf=fundCum.map((f,i)=>f-spyCum[i]);
+  const fundFinal=fundCum[n-1];
+  const alpha=fundFinal-spyFinal;
+
+  // Max DD on fund
+  let pkk=0,fundDD=0;
+  fundCum.forEach(r=>{pkk=Math.max(pkk,r+100);const d=((r+100)-pkk)/pkk*100;fundDD=Math.min(fundDD,d);});
+
+  // Volatility
+  const fRets=fundCum.slice(1).map((v,i)=>v-fundCum[i]);
+  const fStd=Math.sqrt(fRets.map(r=>(r-fRets.reduce((a,b)=>a+b,0)/fRets.length)**2).reduce((a,b)=>a+b,0)/fRets.length)||1;
+  const sRets=spyCum.slice(1).map((v,i)=>v-spyCum[i]);
+  const sStd=Math.sqrt(sRets.map(r=>(r-sRets.reduce((a,b)=>a+b,0)/sRets.length)**2).reduce((a,b)=>a+b,0)/sRets.length)||1;
+  const beta=(fStd/sStd).toFixed(2);
+
+  // Render
+  document.getElementById('fund-prog').style.display='none';
+  document.getElementById('fund-results').style.display='';
+  const periodLabel=fundPeriod==='custom'?`${document.getElementById('fund-start').value} to ${document.getElementById('fund-end').value}`:fundPeriod;
+  document.getElementById('fund-rtitle').textContent='Your Fund vs S&P 500';
+  document.getElementById('fund-rmeta').textContent=`${periodLabel} · ${validT.length} holdings · benchmark: SPY`;
+
+  document.getElementById('fund-vs').innerHTML=`
+    <div class="fvs-c">
+      <div class="fvs-lbl">Your Fund — ${periodLabel}</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;color:${fundFinal>=0?'var(--green)':'var(--red)'};">${fundFinal>=0?'+':''}${fundFinal.toFixed(1)}%</div>
+      <div style="font-size:0.79rem;color:var(--text3);margin-top:4px;">${validT.length} stocks · weighted blend</div>
+    </div>
+    <div class="fvs-c">
+      <div class="fvs-lbl">SPY — same period</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;color:${spyFinal>=0?'var(--green)':'var(--red)'};">${spyFinal>=0?'+':''}${spyFinal.toFixed(1)}%</div>
+      <div style="font-size:0.79rem;margin-top:4px;">Alpha: <strong style="color:${alpha>=0?'var(--green)':'var(--red)'};">${alpha>=0?'+':''}${alpha.toFixed(1)}%</strong></div>
+    </div>`;
+
+  const c=v=>v>=0?'var(--green)':'var(--red)',sv=v=>v>=0?'+':'';
+  document.getElementById('fund-stats').innerHTML=[
+    ['Fund Return',`${sv(fundFinal)}${fundFinal.toFixed(1)}%`,c(fundFinal),'Total cumulative return'],
+    ['SPY Return',`${sv(spyFinal)}${spyFinal.toFixed(1)}%`,c(spyFinal),'S&P 500 benchmark'],
+    ['Alpha',`${sv(alpha)}${alpha.toFixed(1)}%`,c(alpha),'Outperformance vs SPY'],
+    ['Max Drawdown',`${fundDD.toFixed(1)}%`,'var(--red)','Fund worst decline'],
+    ['Beta (approx.)',beta,parseFloat(beta)<1?'var(--green)':parseFloat(beta)<1.5?'var(--amber)':'var(--red)','Fund volatility vs SPY'],
+    ['Holdings',validT.length.toString(),'var(--text)',`of ${fundTickers.length} requested`],
+  ].map(([l,v,col,sub])=>`<div class="stat-t"><div class="stat-t-lbl">${l}</div><div class="stat-t-val" style="color:${col};">${v}</div><div class="stat-t-sub">${sub}</div></div>`).join('');
+
+  const sr=stride(n),labels=makeYearLabels(spyTs.filter((_,i)=>i%sr===0));
+  const fv=fundCum.filter((_,i)=>i%sr===0),bv=spyCum.filter((_,i)=>i%sr===0),rv=relPerf.filter((_,i)=>i%sr===0);
+  const{grid,tc}=chartColors();
+
+  if(fundC)fundC.destroy();
+  fundC=new Chart(document.getElementById('fund-chart').getContext('2d'),{type:'line',data:{labels,datasets:[
+    {label:'Fund',data:fv,borderColor:'#60cfff',borderWidth:2.5,pointRadius:0,tension:0.2,fill:true,backgroundColor:ctx=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,280);g.addColorStop(0,'rgba(96,207,255,0.12)');g.addColorStop(1,'transparent');return g;}},
+    {label:'SPY',data:bv,borderColor:'#f59e0b',borderWidth:2,pointRadius:0,tension:0.2,fill:false,borderDash:[4,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#0f1923',bodyColor:'#ddeeff',cornerRadius:8,padding:10,callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw>=0?'+':''}${ctx.raw.toFixed(1)}%`}}},scales:{x:{border:{display:false},grid:{color:grid},ticks:{color:tc,font:{size:10},maxTicksLimit:10,maxRotation:0}},y:{border:{display:false},grid:{color:grid},ticks:{color:tc,font:{size:10},callback:v=>`${v>=0?'+':''}${v.toFixed(0)}%`}}}}});
+
+  if(fundRel)fundRel.destroy();
+  fundRel=new Chart(document.getElementById('fund-rel').getContext('2d'),{type:'line',data:{labels,datasets:[{label:'Alpha',data:rv,borderColor:alpha>=0?'#10b981':'#ef4444',borderWidth:2,pointRadius:0,tension:0.2,fill:true,backgroundColor:ctx=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,110);g.addColorStop(0,alpha>=0?'rgba(16,185,129,0.12)':'rgba(239,68,68,0.10)');g.addColorStop(1,'transparent');return g;}}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#0f1923',bodyColor:'#ddeeff',cornerRadius:8,padding:8,callbacks:{label:ctx=>`Alpha: ${ctx.raw>=0?'+':''}${ctx.raw.toFixed(1)}%`}}},scales:{x:{border:{display:false},grid:{display:false},ticks:{color:tc,font:{size:10},maxTicksLimit:6,maxRotation:0}},y:{border:{display:false},grid:{color:grid},ticks:{color:tc,font:{size:10},callback:v=>`${v>=0?'+':''}${v.toFixed(1)}%`}}}}});
+
+  document.getElementById('fund-rows').innerHTML=validT.map(({ticker,weight})=>{
+    const d=tRets[ticker];if(!d)return '';
+    const ret=(d.endP-d.startP)/d.startP*100,vs=ret-spyFinal,contrib=ret*(weight/vTotW);
+    return `<tr>
+      <td><strong>${ticker}</strong></td>
+      <td>${(weight/vTotW*100).toFixed(1)}%</td>
+      <td>$${d.startP.toFixed(2)}</td>
+      <td>$${d.endP.toFixed(2)}</td>
+      <td class="${ret>=0?'up':'dn'}">${ret>=0?'+':''}${ret.toFixed(1)}%</td>
+      <td class="${vs>=0?'up':'dn'}">${vs>=0?'+':''}${vs.toFixed(1)}%</td>
+      <td class="${contrib>=0?'up':'dn'}">${contrib>=0?'+':''}${contrib.toFixed(1)}%</td>
+    </tr>`;
+  }).join('');
+
+  btn.innerHTML='<i class="fas fa-chart-bar"></i>Run Comparison';btn.disabled=false;
+  document.getElementById('fund-results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+</body>
+</html>
