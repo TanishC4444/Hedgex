@@ -1,14 +1,14 @@
-# What I Learned from Analyzing the USIT/QMI Portfolio with HedgeX
+# What I Learned from Analyzing USIT's Portfolio with HedgeX
 
-I used HedgeX to study the portfolio shown in these screenshots. My goal was to go beyond the headline return and understand what the result says about benchmark-relative performance, downside risk, market sensitivity, position sizing, and concentration. HedgeX let me compare the portfolio with the SPDR S&P 500 ETF (`SPY`) and then trace the overall result back to individual holdings.
+I used HedgeX to study USIT's portfolio as shown in these screenshots. My goal was to go beyond the headline return and understand what the result says about benchmark-relative performance, downside risk, market sensitivity, position sizing, and concentration. HedgeX let me compare USIT's portfolio with the SPDR S&P 500 ETF (`SPY`) and then trace the overall result back to individual holdings.
 
-> **Scope of my analysis.** I treat the holdings and weights visible in the screenshots as the portfolio snapshot for this analysis; I am not assuming that they represent USIT's or QMI's current live allocations. The results are historical, sensitive to the selected dates and weights, and do not include taxes, fees, slippage, or trading constraints. “Alpha” in this interface is arithmetic outperformance, not regression-based or CAPM alpha. This is an analytical interpretation, not an investment recommendation.
+> **Scope of my analysis.** I treat the holdings and weights visible in the screenshots as a snapshot of USIT's portfolio for this analysis; I am not assuming that they represent USIT's current live allocations. The results are historical, sensitive to the selected dates and weights, and do not include taxes, fees, slippage, or trading constraints. “Alpha” in this interface is arithmetic outperformance, not regression-based or CAPM alpha. This is an analytical interpretation, not an investment recommendation.
 
 ## Portfolio setup and headline results
 
 ![HedgeX fund builder and performance summary](docs/assets/hedgex-fund-overview.png)
 
-The portfolio input contained 20 weighted holdings totaling 100%. HedgeX found sufficient history for 19 of them and compared the available basket with `SPY` over the same 10-year period. In this snapshot:
+The USIT portfolio snapshot contained 20 weighted holdings totaling 100%. HedgeX found sufficient history for 19 of them and compared the available basket with `SPY` over the same 10-year period. In this snapshot:
 
 The controls at the top define the experiment. **Quick Presets** load example baskets; **Holdings** lists each requested ticker and target weight; **Equal Weight** divides the allocation evenly; **Total weight** confirms whether the allocations form a complete 100% portfolio; **Time Range** sets the historical window; and **Run Comparison** applies those choices against the displayed benchmark. A ticker chip is an intended position, not proof that the security was ultimately included—data validation happens when the comparison runs.
 
@@ -17,7 +17,7 @@ The controls at the top define the experiment. **Quick Presets** load example ba
 | Fund return | **+643.8%** | If I hypothetically invested $1 at the beginning, it became about $7.44 before costs. This is total cumulative return, not an annual return. |
 | SPY return | **+314.2%** | The same $1 benchmark investment became about $4.14 over the same dates. |
 | Alpha | **+329.6 percentage points** | HedgeX subtracts SPY's cumulative return from the fund's cumulative return: `643.8% − 314.2%`. This measures arithmetic outperformance in this view. |
-| Maximum drawdown | **−32.6%** | The largest peak-to-trough decline in the simulated fund. An investor would have had to tolerate roughly one-third of the portfolio value disappearing before recovery. |
+| Maximum drawdown | **−32.6%** | The largest peak-to-trough decline in the simulation of USIT's portfolio. An investor would have had to tolerate roughly one-third of the portfolio value disappearing before recovery. |
 | Approximate beta | **2.22** | An estimate of sensitivity to SPY. If calculated conventionally from periodic returns, a 1% SPY move is associated with an average fund move of about 2.22% in the same direction. It is not a forecast and can change over time. |
 | Holdings analyzed | **19 of 20 requested** | At least one requested ticker did not have usable data across the selected window, so HedgeX excluded it from the comparison. |
 
@@ -69,13 +69,13 @@ That is an approximate annualized difference of `6.95` percentage points. I woul
 
 ### How to read the charts
 
-- **Blue line — Your Fund:** cumulative growth of the weighted portfolio from a common 0% starting point.
+- **Blue line — Your Fund:** the interface's label for the simulated cumulative growth of USIT's portfolio from a common 0% starting point.
 - **Orange dotted line — SPY:** cumulative growth of the S&P 500 benchmark over exactly the same period.
 - **Green alpha line:** the point-in-time gap between those two cumulative-return series. A rising line means the fund is extending its lead; a falling line means SPY is catching up, even if both investments are rising.
 
-One distinction I learned to make is the difference between percentage points and percent. The displayed `+329.6%` alpha is a **329.6-percentage-point spread** between two cumulative returns. It does not mean the portfolio earned 329.6% more on a multiplicative basis, and it is not risk-adjusted alpha.
+One distinction I learned to make is the difference between percentage points and percent. The displayed `+329.6%` alpha is a **329.6-percentage-point spread** between two cumulative returns. It does not mean USIT's portfolio earned 329.6% more on a multiplicative basis, and it is not risk-adjusted alpha.
 
-For maximum drawdown, I compare each portfolio value with the highest value observed before it:
+For maximum drawdown, I compare each simulated value of USIT's portfolio with the highest value observed before it:
 
 $$
 Drawdown_t = \frac{V_t}{\max_{s \le t}(V_s)} - 1
@@ -99,16 +99,16 @@ A beta of `2.22` means the fitted relationship is roughly `2.22%` of fund moveme
 
 ![HedgeX cumulative alpha chart and holdings breakdown](docs/assets/hedgex-holdings-breakdown.png)
 
-I use the holdings table to explain where the portfolio result came from:
+I use the holdings table to explain where the simulated result for USIT's portfolio came from:
 
 | Column | Interpretation |
 |---|---|
 | Ticker | Exchange symbol for the security. |
-| Weight | The holding's share of the **analyzed** portfolio. When a requested ticker lacks data, HedgeX rescales the remaining weights to total approximately 100%; small differences can remain because of display rounding. |
+| Weight | The holding's share of the **analyzed USIT portfolio snapshot**. When a requested ticker lacks data, HedgeX rescales the remaining weights to total approximately 100%; small differences can remain because of display rounding. |
 | Start / End | The price observations used at the two endpoints. These support a true total-return comparison only if the underlying series is adjusted for splits and distributions; that implementation detail should be disclosed. |
 | Return | The holding's cumulative return between the endpoints: `(end / start − 1) × 100`. |
 | vs SPY | The holding's return minus SPY's `314.2%` return, expressed in percentage points. For example, DDOG's `531.3% − 314.2% = 217.1` percentage points. |
-| Fund contribution | The holding's displayed portfolio weight multiplied by its return. For DDOG, roughly `16.7% × 531.3% ≈ 88.5` percentage points. Summing the holdings' contributions produces the fund's cumulative return, subject to rounding. |
+| Fund contribution | The holding's displayed weight in USIT's portfolio multiplied by its return. For DDOG, roughly `16.7% × 531.3% ≈ 88.5` percentage points. Summing the holdings' contributions produces the simulated portfolio's cumulative return, subject to rounding. |
 
 The setup screenshot shows DDOG at 14.43%, while the analyzed table shows 16.7%. The numbers indicate that ATZ—the 13.4% requested position—was excluded and the remaining holdings were renormalized. I calculate the new DDOG weight as:
 
@@ -118,13 +118,13 @@ w_{DDOG,new} = \frac{14.43\%}{100\% - 13.40\%}
 \approx 16.66\%
 $$
 
-That rounds to the displayed `16.7%`. Insufficient full-period history is a likely reason for ATZ's exclusion, but I would want the interface to report the exact cause. The rescaling is useful, but it also means the analyzed portfolio is not identical to the 20-holding portfolio originally entered.
+That rounds to the displayed `16.7%`. Insufficient full-period history is a likely reason for ATZ's exclusion, but I would want the interface to report the exact cause. The rescaling is useful, but it also means the analyzed version of USIT's portfolio is not identical to the 20-holding snapshot originally entered.
 
 ## What I learned from the visualization
 
 ### 1. The selected backtest shows large—but highly concentrated—outperformance
 
-The simulated portfolio beat SPY by 329.6 percentage points in the selected window. However, ANET contributed approximately **351.1 percentage points**. I calculated its share of the portfolio's total return as:
+The simulation of USIT's portfolio beat SPY by 329.6 percentage points in the selected window. However, ANET contributed approximately **351.1 percentage points**. I calculated its share of USIT's simulated portfolio return as:
 
 $$
 \frac{351.1}{643.8} \times 100 \approx 54.5\%
@@ -140,7 +140,7 @@ $$
 \frac{545.0}{643.8} \times 100 \approx 84.7\%
 $$
 
-This means five of the 19 analyzed stocks generated about 84.7% of the portfolio's cumulative return.
+This means five of the 19 analyzed stocks generated about 84.7% of USIT's simulated cumulative portfolio return.
 
 Under the dashboard's contribution convention, removing ANET's contribution leaves:
 
@@ -152,15 +152,15 @@ $$
 292.7\% - 314.2\% = -21.5\text{ percentage points versus SPY}
 $$
 
-My central conclusion is therefore not simply “this portfolio generates alpha.” What I learned is more specific: **a small number of exceptional winners generated nearly all of the observed edge.** I see that as evidence of successful security selection in this period, but also as a warning about repeatability and concentration risk.
+My central conclusion is therefore not simply “USIT's portfolio generates alpha.” What I learned is more specific: **a small number of exceptional winners generated nearly all of the observed edge.** That result is consistent with successful security selection in this backtest, but it does not by itself establish repeatability and it highlights concentration risk.
 
 ### 2. Higher return came with materially higher market exposure
 
-The approximate beta of 2.22 and maximum drawdown of −32.6% show me that the headline return was not free. The analyzed portfolio behaved like an aggressive equity basket and experienced meaningful losses along the way. The cumulative-alpha chart also contracts during several intervals, indicating that its relative performance was regime-dependent rather than uniformly positive.
+The approximate beta of 2.22 and maximum drawdown of −32.6% show me that the headline return was not free. The analyzed simulation of USIT's portfolio behaved like an aggressive equity basket and experienced meaningful losses along the way. The cumulative-alpha chart also contracts during several intervals, indicating that its relative performance was regime-dependent rather than uniformly positive.
 
 ### 3. Benchmark-relative performance and portfolio contribution answer different questions
 
-`vs SPY` tells me whether an individual stock outperformed the benchmark. `Fund contribution` tells me how much that stock actually moved the analyzed portfolio after accounting for its weight. For holding `i`, I use:
+`vs SPY` tells me whether an individual stock outperformed the benchmark. `Fund contribution` tells me how much that stock moved the simulation of USIT's portfolio after accounting for its weight. For holding `i`, I use:
 
 $$
 Contribution_i = w_i \times R_i
@@ -176,7 +176,7 @@ The small difference from the displayed `88.5%` comes from using rounded weight 
 
 ### 4. Data availability changes the investment being tested
 
-Because HedgeX analyzed only 19 of the 20 requested holdings, it reweighted the surviving positions upward. This avoids leaving 13.4% of the model in unexplained cash, but it can introduce survivorship and availability bias. In a research-quality version, I would record which ticker was dropped, why it was dropped, the first common tradable date, and whether the portfolio was rebalanced.
+Because HedgeX analyzed only 19 of the 20 holdings in the USIT snapshot, it reweighted the surviving positions upward. This avoids leaving 13.4% of the model in unexplained cash, but it can introduce survivorship and availability bias. In a research-quality version, I would record which ticker was dropped, why it was dropped, the first common tradable date, and the rebalancing rule applied to USIT's portfolio simulation.
 
 ## What I believe this could contribute to QMI
 
@@ -213,7 +213,7 @@ Before I treat a result as investible evidence, I should disclose:
 - transaction costs, taxes, liquidity, and delisting treatment; and
 - results across multiple start dates, benchmarks, and out-of-sample periods.
 
-I do not think these limitations reduce HedgeX's usefulness. Instead, they show me what I would need to validate before presenting the result as evidence about the portfolio's repeatable performance.
+I do not think these limitations reduce HedgeX's usefulness. Instead, they show me what I would need to validate before presenting the result as evidence about the repeatable performance of USIT's portfolio.
 
 ---
 
