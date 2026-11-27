@@ -1,2 +1,10 @@
-# Compatibility with the original setup command.
--r requirements.txt
+Dependencies - 
+auto-py-to-exe==2.44.2
+
+App Structure - 
+
+google sites - EXE file
+
+Login page
+    Webapp
+

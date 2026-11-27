@@ -1,3 +1,6 @@
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
 import os
 import threading
 import webbrowser
@@ -1123,41 +1126,9 @@ def download_transactions():
         print(f"Error downloading transactions: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-@app.route('/fund_chart', methods=['GET'])
-def fund_chart():
-    """
-    Fetch daily closing prices for a ticker between two specific dates.
-    Used by the Fund Comparison tool in the simulator.
-    Params: ticker, start (YYYY-MM-DD), end (YYYY-MM-DD), interval (default: 1d)
-    Returns: {timestamps: [...], prices: [...]}
-    """
-    ticker = request.args.get('ticker', '').upper()
-    start = request.args.get('start', '')
-    end = request.args.get('end', '')
-    interval = request.args.get('interval', '1d')
-
-    if not ticker or not start or not end:
-        return jsonify({"error": "Missing ticker, start, or end date"}), 400
-
-    try:
-        stock = yf.Ticker(ticker)
-        hist = stock.history(start=start, end=end, interval=interval)
-
-        if hist.empty:
-            return jsonify({"error": f"No data found for {ticker} in range {start} to {end}"}), 404
-
-        timestamps = hist.index.strftime('%Y-%m-%d').tolist()
-        prices = hist['Close'].round(2).tolist()
-
-        return jsonify({"timestamps": timestamps, "prices": prices})
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
 def open_browser():
     webbrowser.open_new("http://127.0.0.1:5000")
 
 if __name__ == '__main__':
     threading.Timer(1.25, open_browser).start()
-    app.run(debug=os.environ.get("FLASK_DEBUG") == "1")
+    app.run(debug=True)

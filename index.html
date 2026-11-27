@@ -6,11 +6,14 @@
     <title>Hedgex | Learn Trading with Zero Risk</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         :root {
+            /* Light theme variables */
             --primary-bg: linear-gradient(135deg, #f0f9ff, #e6f7ff);
             --secondary-bg: #ffffff;
-            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-hover-bg: #ffffff;
             --accent-color: #0077b6;
             --accent-hover: #0096c7;
             --accent-light: rgba(0, 119, 182, 0.1);
@@ -21,14 +24,14 @@
             --button-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
             --border-color: rgba(226, 232, 240, 0.8);
             --highlight: #38bdf8;
-            --success: #10b981;
-            --error: #ef4444;
         }
 
         [data-theme="dark"] {
+            /* Dark theme variables */
             --primary-bg: linear-gradient(135deg, #0f172a, #1e293b);
             --secondary-bg: #111827;
-            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-hover-bg: rgba(44, 62, 80, 0.9);
             --accent-color: #38bdf8;
             --accent-hover: #7dd3fc;
             --accent-light: rgba(56, 189, 248, 0.1);
@@ -45,6 +48,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         body {
@@ -53,8 +57,8 @@
             color: var(--text-color);
             overflow-x: hidden;
             min-height: 100vh;
+            transition: background 0.5s ease;
             line-height: 1.6;
-            transition: background 0.5s ease, color 0.3s ease;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -90,6 +94,20 @@
             margin: 0 auto;
         }
 
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, var(--accent-color), var(--highlight));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
         .logo {
             font-size: 1.8rem;
             font-weight: 700;
@@ -97,6 +115,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            position: relative;
         }
 
         .nav-links {
@@ -111,7 +130,6 @@
             font-weight: 500;
             position: relative;
             padding: 5px 0;
-            transition: color 0.3s ease;
         }
 
         .nav-link::after {
@@ -125,20 +143,16 @@
             transition: width 0.3s ease;
         }
 
-        .nav-link:hover {
-            color: var(--accent-color);
-        }
-
         .nav-link:hover::after {
             width: 100%;
         }
 
-        .cta-button-nav {
+        .cta-button-small {
             background: var(--accent-color);
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 10px 24px;
+            border-radius: 6px;
+            padding: 8px 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -146,12 +160,21 @@
             display: inline-block;
         }
 
-        .cta-button-nav:hover {
+        .cta-button-small:hover {
             background: var(--accent-hover);
             transform: translateY(-2px);
-            box-shadow: var(--button-shadow);
         }
 
+        .mobile-menu-btn {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+        }
+
+        /* Theme toggle */
         .theme-toggle {
             background: var(--accent-light);
             border: none;
@@ -164,11 +187,6 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 5px;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            box-shadow: 0 0 10px var(--accent-light);
         }
 
         .theme-toggle::before {
@@ -188,13 +206,16 @@
             transform: translateX(22px);
         }
 
-        .mobile-menu-btn {
-            display: none;
-            cursor: pointer;
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 1.5rem;
+        .theme-toggle .sun {
+            color: #ffd60a;
+            font-size: 12px;
+            z-index: 2;
+        }
+
+        .theme-toggle .moon {
+            color: #94a3b8;
+            font-size: 12px;
+            z-index: 2;
         }
 
         /* Hero Section */
@@ -221,7 +242,7 @@
             font-weight: 600;
             font-size: 0.9rem;
             margin-bottom: 20px;
-            animation: slideDown 0.6s ease;
+            animation: fadeIn 1s forwards;
         }
 
         .hero-title {
@@ -229,19 +250,18 @@
             font-weight: 700;
             margin-bottom: 20px;
             line-height: 1.2;
-            animation: slideUp 0.8s ease 0.2s both;
+            animation: fadeInUp 1s forwards 0.3s;
+            opacity: 0;
         }
 
         .hero-title span {
-            background: linear-gradient(45deg, var(--accent-color), var(--highlight));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: var(--accent-color);
         }
 
         .hero-description {
             font-size: 1.25rem;
-            animation: slideUp 0.8s ease 0.4s both;
+            opacity: 0;
+            animation: fadeInUp 1s forwards 0.6s;
             margin-bottom: 40px;
             max-width: 600px;
             margin-left: auto;
@@ -253,8 +273,8 @@
             display: flex;
             justify-content: center;
             gap: 20px;
-            animation: slideUp 0.8s ease 0.6s both;
-            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 1s forwards 0.9s;
         }
 
         .cta-button {
@@ -275,15 +295,15 @@
         .cta-button:hover {
             background: var(--accent-hover);
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 119, 182, 0.4);
+            box-shadow: 0 7px 20px rgba(0, 119, 182, 0.4);
         }
 
         .secondary-button {
             background: transparent;
-            color: var(--accent-color);
-            border: 2px solid var(--accent-color);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
             border-radius: 8px;
-            padding: 13px 28px;
+            padding: 15px 30px;
             font-weight: 600;
             font-size: 1.1rem;
             cursor: pointer;
@@ -293,8 +313,7 @@
         }
 
         .secondary-button:hover {
-            background: var(--accent-color);
-            color: white;
+            border-color: var(--accent-color);
             transform: translateY(-3px);
         }
 
@@ -313,7 +332,6 @@
             border-radius: 50%;
             background: var(--accent-light);
             filter: blur(60px);
-            animation: float 6s ease-in-out infinite;
         }
 
         .shape-1 {
@@ -330,10 +348,9 @@
             bottom: -80px;
             left: -100px;
             opacity: 0.3;
-            animation-delay: 2s;
         }
 
-        /* Features Section */
+        /* Features section */
         .features-section {
             padding: 80px 0;
             position: relative;
@@ -372,7 +389,7 @@
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             margin-top: 40px;
         }
@@ -384,32 +401,14 @@
             box-shadow: var(--card-shadow);
             transition: all 0.3s ease;
             border: 1px solid var(--border-color);
+            height: 100%;
             display: flex;
             flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-color), var(--highlight));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover::before {
-            transform: scaleX(1);
         }
 
         .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
         .feature-icon {
@@ -423,11 +422,6 @@
             margin-bottom: 20px;
             font-size: 1.5rem;
             color: var(--accent-color);
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1);
         }
 
         .feature-title {
@@ -440,46 +434,71 @@
             flex-grow: 1;
         }
 
-        /* How It Works Section */
+        /* How It Works section */
         .how-it-works-section {
             padding: 80px 0;
             background: var(--secondary-bg);
+            position: relative;
         }
 
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
             margin-top: 60px;
+            position: relative;
         }
 
-        .step-card {
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: var(--border-color);
+            transform: translateX(-50%);
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .step:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .step:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .step-content {
+            width: 45%;
             background: var(--card-bg);
             border-radius: 15px;
             padding: 30px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
             position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .step-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
 
         .step-number {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--accent-color), var(--highlight));
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+            z-index: 2;
         }
 
         .step-title {
@@ -498,6 +517,8 @@
         .dashboard-preview {
             padding: 80px 0;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
         .dashboard-image {
@@ -506,53 +527,185 @@
             border-radius: 15px;
             box-shadow: var(--card-shadow);
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
         .dashboard-image:hover {
-            transform: scale(1.02);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            transform: scale(1.03);
         }
 
-        /* About Section */
+        /* Testimonials */
+        .testimonials-section {
+            padding: 80px 0;
+            background: var(--secondary-bg);
+        }
+
+        .testimonials-carousel {
+            max-width: 800px;
+            margin: 40px auto 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-slide {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            margin: 20px 10px;
+        }
+
+        .testimonial-content {
+            font-style: italic;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .testimonial-content::before, 
+        .testimonial-content::after {
+            content: '"';
+            font-size: 3rem;
+            color: var(--accent-light);
+            position: absolute;
+            opacity: 0.7;
+        }
+
+        .testimonial-content::before {
+            top: -20px;
+            left: -10px;
+        }
+
+        .testimonial-content::after {
+            bottom: -40px;
+            right: -10px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .author-details {
+            text-align: left;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: var(--heading-color);
+        }
+
+        .author-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: var(--accent-color);
+            transform: scale(1.2);
+        }
+
+        /* About section */
         .about-section {
             padding: 80px 0;
+            position: relative;
+        }
+
+        .about-container {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .about-image {
+            flex: 1;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            max-width: 500px;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
         }
 
         .about-content {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 50px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
-            margin-top: 40px;
+            flex: 1;
         }
 
-        .about-content p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
+        .about-title {
+            font-size: 2.2rem;
             margin-bottom: 20px;
-            line-height: 1.8;
+            position: relative;
+            display: inline-block;
+        }
+
+        .about-title::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), var(--highlight));
+            bottom: -10px;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .about-description {
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
         }
 
         .about-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            display: flex;
             gap: 30px;
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .stat-item {
             text-align: center;
-            padding: 20px;
-            background: var(--accent-light);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px var(--accent-light);
         }
 
         .stat-number {
@@ -575,7 +728,6 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            margin-top: 80px;
         }
 
         .cta-content {
@@ -614,8 +766,28 @@
 
         .cta-button-white:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            background: #f0f9ff;
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.2);
+            background: #f8f9fa;
+        }
+
+        .cta-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .cta-shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -100px;
+        }
+
+        .cta-shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -80px;
         }
 
         /* Footer */
@@ -623,14 +795,12 @@
             background: var(--secondary-bg);
             padding: 60px 0 30px;
             color: var(--text-color);
-            border-top: 1px solid var(--border-color);
         }
 
         .footer-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 40px;
-            margin-bottom: 40px;
         }
 
         .footer-col {
@@ -646,6 +816,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            display: inline-block;
         }
 
         .footer-description {
@@ -655,9 +826,21 @@
         }
 
         .footer-title {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: var(--accent-color);
+            bottom: 0;
+            left: 0;
+            border-radius: 2px;
         }
 
         .footer-links {
@@ -670,92 +853,246 @@
             color: var(--text-muted);
             text-decoration: none;
             transition: color 0.3s ease;
-            font-size: 0.95rem;
         }
 
         .footer-link:hover {
             color: var(--accent-color);
         }
 
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+
         .footer-bottom {
+            margin-top: 40px;
             padding-top: 20px;
             border-top: 1px solid var(--border-color);
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .copyright {
             color: var(--text-muted);
             font-size: 0.9rem;
         }
 
-        /* Animations */
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .footer-bottom-links {
+            display: flex;
+            gap: 20px;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .footer-bottom-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
         }
 
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(30px);
-            }
+        .footer-bottom-link:hover {
+            color: var(--accent-color);
         }
 
-        /* Back to top */
-        .back-to-top {
+        /* Modal */
+        .modal-overlay {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            color: white;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            z-index: 99;
         }
 
-        .back-to-top.visible {
+        .modal-overlay.active {
             opacity: 1;
             visibility: visible;
         }
 
-        .back-to-top:hover {
-            background: var(--accent-hover);
-            transform: translateY(-5px);
+        .modal {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--card-shadow);
+            transform: translateY(30px);
+            transition: all 0.3s ease;
         }
 
-        /* Responsive */
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--accent-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--heading-color);
+        }
+
+        .form-input {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--secondary-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .form-button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .form-button:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Charts */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            margin: 20px 0;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* Responsive styles */
         @media (max-width: 992px) {
             .hero-title {
                 font-size: 3rem;
             }
             
-            .section-title {
-                font-size: 2rem;
+            .about-container {
+                flex-direction: column;
+            }
+            
+            .about-image {
+                max-width: 100%;
+            }
+            
+            .steps-container::before {
+                left: 20px;
+            }
+            
+            .step {
+                flex-direction: row !important;
+            }
+            .step-number {
+                left: 20px;
+            }
+            
+            .step-content {
+                width: calc(100% - 50px);
+                margin-left: 40px;
             }
         }
 
@@ -794,12 +1131,13 @@
                 margin: 0 auto;
             }
 
-            .about-content {
-                padding: 30px;
+            .feature-card {
+                padding: 20px;
             }
-
-            .cta-title {
-                font-size: 2rem;
+            
+            .about-stats {
+                flex-wrap: wrap;
+                justify-content: center;
             }
         }
 
@@ -812,34 +1150,445 @@
                 font-size: 1.8rem;
             }
             
+            .testimonial-slide {
+                padding: 20px 15px;
+            }
+            
             .cta-title {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
             
             .footer-container {
                 grid-template-columns: 1fr;
             }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-bottom-links {
+                justify-content: center;
+            }
+        }
+
+        /* Live Market Data */
+        .market-data-section {
+            padding: 80px 0;
+        }
+        
+        .market-ticker {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .ticker-wrap {
+            display: flex;
+            animation: ticker 30s linear infinite;
+            white-space: nowrap;
+        }
+        
+        .ticker-item {
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .ticker-symbol {
+            font-weight: 600;
+            color: var(--heading-color);
+        }
+        
+        .ticker-price {
+            color: var(--text-color);
+        }
+        
+        .ticker-change {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .ticker-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .ticker-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        @keyframes ticker {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+        
+        .market-charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            height: 100%;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .chart-timeframe {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .timeframe-button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .timeframe-button.active, .timeframe-button:hover {
+            background: var(--accent-light);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .chart-canvas {
+            width: 100%;
+            height: 200px;
+        }
+
+        /* Educational Resources */
+        .resources-section {
+            padding: 80px 0;
+            background: var(--secondary-bg);
+        }
+        
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .resource-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .resource-image {
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .resource-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .resource-card:hover .resource-image img {
+            transform: scale(1.05);
+        }
+        
+        .resource-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .resource-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            background: var(--accent-light);
+            color: var(--accent-color);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .resource-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+        
+        .resource-description {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+        
+        .resource-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-link:hover {
+            gap: 12px;
+        }
+
+        /* Portfolio Demo */
+        .portfolio-demo-section {
+            padding: 80px 0;
+        }
+        
+        .portfolio-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .portfolio-tab {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+        
+        .portfolio-tab.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        
+        .portfolio-content {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+        
+        .portfolio-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .portfolio-value-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .portfolio-value-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .portfolio-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--heading-color);
+        }
+        
+        .portfolio-change {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .portfolio-change.positive {
+            color: #10b981;
+        }
+        
+        .portfolio-change.negative {
+            color: #ef4444;
+        }
+        
+        .portfolio-timeframe {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .portfolio-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .portfolio-table th, .portfolio-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .portfolio-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .portfolio-table td {
+            color: var(--text-color);
+        }
+        
+        .portfolio-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .stock-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .stock-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-light);
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .stock-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stock-symbol {
+            font-weight: 600;
+            color: var(--heading-color);
+        }
+        
+        .stock-name {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .stock-change {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .stock-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .stock-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Loading */
+        .loading-skeleton {
+            background: linear-gradient(90deg, var(--card-bg), var(--border-color), var(--card-bg));
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+        
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Back to top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 99;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--accent-hover);
+            transform: translateY(-5px);
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <h1 class="logo">Hedgex</h1>
-            <div class="nav-links">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#how-it-works" class="nav-link">How It Works</a>
-                <a href="#about" class="nav-link">About</a>
-                <button class="theme-toggle" aria-label="Toggle dark mode"></button>
-                <a href="#download" class="cta-button-nav">Try Demo</a>
-            </div>
-            <button class="mobile-menu-btn" aria-label="Mobile menu">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </nav>
-
     <!-- Hero Section -->
     <section class="hero-section" id="home">
         <div class="hero-shapes">
@@ -849,243 +1598,330 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-badge">
-                    <i class="fas fa-star"></i> Risk-Free Trading Simulator
+                    <i class="fas fa-store"></i> Prosper's School Store
                 </div>
-                <h1 class="hero-title">Learn Trading with <span>Zero Risk</span></h1>
-                <p class="hero-description">Build your financial literacy, master investment strategies, and experience real-world market dynamics with virtual money.</p>
+                <h1 class="hero-title">Welcome to <span>Eagle Shack</span></h1>
+                <p class="hero-description">Your convenient on-campus destination for snacks, drinks, and more - all at competitive prices!</p>
                 <div class="hero-buttons">
-                    <a href="#download" class="cta-button">
-                        <i class="fas fa-download"></i> Download Hedgex
+                    <a href="#products" class="cta-button">
+                        <i class="fas fa-shopping-cart"></i> View Products
                     </a>
-                    <a href="#how-it-works" class="secondary-button">
-                        <i class="fas fa-play-circle"></i> See How It Works
+                    <a href="#about" class="secondary-button">
+                        <i class="fas fa-info-circle"></i> Learn More
                     </a>
                 </div>
             </div>
         </div>
     </section>
-
+    
     <!-- Features Section -->
     <section class="features-section" id="features">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Why Choose Hedgex</h2>
-                <p class="section-description">Powerful features designed for traders of all experience levels.</p>
+                <h2 class="section-title">Why Choose Eagle Shack</h2>
+                <p class="section-description">Discover what makes Eagle Shack the favorite spot for students at Prosper High School.</p>
             </div>
             
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-tags"></i>
                     </div>
-                    <h3 class="feature-title">Real-Time Market Data</h3>
-                    <p class="feature-description">Experience authentic market conditions with live data from global exchanges, powered by the yfinance API.</p>
+                    <h3 class="feature-title">Competitive Pricing</h3>
+                    <p class="feature-description">Our prices beat the vending machines! Enjoy your favorite snacks and drinks at student-friendly prices.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-wallet"></i>
+                        <i class="fas fa-box-open"></i>
                     </div>
-                    <h3 class="feature-title">Virtual Portfolio</h3>
-                    <p class="feature-description">Track investments, view performance metrics, and analyze trading strategies with a comprehensive dashboard.</p>
+                    <h3 class="feature-title">Wide Selection</h3>
+                    <p class="feature-description">With over 250 products to choose from, we have something for everyone - from snacks and drinks to school supplies.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-graduation-cap"></i>
+                        <i class="fas fa-clock"></i>
                     </div>
-                    <h3 class="feature-title">Learning Resources</h3>
-                    <p class="feature-description">Access tutorials, market analysis techniques, and investment strategies to enhance your financial literacy.</p>
+                    <h3 class="feature-title">Convenient Hours</h3>
+                    <p class="feature-description">Open during lunch periods and after school, Eagle Shack is there when you need a quick snack or refreshment.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Student-Run</h3>
+                    <p class="feature-description">Operated by student volunteers who gain valuable business experience while serving their school community.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h3 class="feature-title">Supports School Programs</h3>
+                    <p class="feature-description">All profits go directly back to supporting various programs and initiatives at Prosper High School.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-exchange-alt"></i>
                     </div>
-                    <h3 class="feature-title">Realistic Trading</h3>
-                    <p class="feature-description">Execute buy/sell orders, set limit prices, and practice diversification strategies in a professional environment.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <h3 class="feature-title">Advanced Analytics</h3>
-                    <p class="feature-description">Visualize performance data with interactive charts to identify patterns and improve decision-making.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <h3 class="feature-title">Smart Alerts</h3>
-                    <p class="feature-description">Stay informed with customizable notifications about market movements and portfolio changes.</p>
+                    <h3 class="feature-title">Easy Transactions</h3>
+                    <p class="feature-description">We accept cash and various digital payment methods for quick and hassle-free purchases.</p>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- How It Works Section -->
-    <section class="how-it-works-section" id="how-it-works">
+    
+    <!-- Products Section -->
+    <section class="how-it-works-section" id="products">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">How Hedgex Works</h2>
-                <p class="section-description">Five simple steps to start your trading journey.</p>
+                <h2 class="section-title">Our Popular Products</h2>
+                <p class="section-description">Choose from over 250 items including snacks, beverages, and school supplies at unbeatable prices.</p>
             </div>
             
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <h3 class="step-title"><i class="fas fa-download"></i> Setup</h3>
-                    <p class="step-description">Install Hedgex and create your account with virtual funds to get started.</p>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number"><i class="fas fa-cookie"></i></div>
+                    <div class="step-content">
+                        <h3 class="step-title">Snacks</h3>
+                        <p class="step-description">
+                            Enjoy a variety of snacks including Cheetos, Doritos (Cool Ranch, Nacho Cheese), Takis, Hot Fries, Lay's Chips (Original, Sour Cream & Onion, BBQ), Zebra Cakes, Rice Krispies Treats, Goldfish, Ritz Crackers, Pretzels, Popcorn, and more - all at just $1.25 per item!
+                        </p>
+                    </div>
                 </div>
                 
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <h3 class="step-title"><i class="fas fa-search"></i> Research</h3>
-                    <p class="step-description">Explore stocks, analyze trends, and make informed decisions using real-time data.</p>
+                <div class="step">
+                    <div class="step-number"><i class="fas fa-chocolate-bar"></i></div>
+                    <div class="step-content">
+                        <h3 class="step-title">Candy & Chocolate</h3>
+                        <p class="step-description">
+                            Satisfy your sweet tooth with Hershey's, KitKat, Snickers, Reese's, M&M's, Skittles, Starburst, Twix, Milky Way, and more varieties of chocolate and candy - all priced at just $2.00!
+                        </p>
+                    </div>
                 </div>
                 
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <h3 class="step-title"><i class="fas fa-money-bill-wave"></i> Trade</h3>
-                    <p class="step-description">Place buy/sell orders, build a diversified portfolio, and practice with virtual funds.</p>
+                <div class="step">
+                    <div class="step-number"><i class="fas fa-bottle-water"></i></div>
+                    <div class="step-content">
+                        <h3 class="step-title">Bottled Drinks</h3>
+                        <p class="step-description">
+                            Stay hydrated with our selection of bottled drinks including Gatorade (all flavors), Powerade, Life Water, Aquafina, Smart Water, and various juices - available for just $2.00 each!
+                        </p>
+                    </div>
                 </div>
                 
-                <div class="step-card">
-                    <div class="step-number">4</div>
-                    <h3 class="step-title"><i class="fas fa-chart-pie"></i> Track</h3>
-                    <p class="step-description">Monitor investments in real-time and view detailed analytics of your portfolio performance.</p>
+                <div class="step">
+                    <div class="step-number"><i class="fas fa-mug-hot"></i></div>
+                    <div class="step-content">
+                        <h3 class="step-title">Energy Drinks & Sodas</h3>
+                        <p class="step-description">
+                            Get energized with Celsius (Tropical Vibe, Strawberry Guava, Peach Mango, Orange, Kiwi Guava), Alani Nu energy drinks, Coca-Cola, Pepsi, Sprite, Dr. Pepper, Mountain Dew, and other soda cans - all for just $1.00 per can!
+                        </p>
+                    </div>
                 </div>
                 
-                <div class="step-card">
-                    <div class="step-number">5</div>
-                    <h3 class="step-title"><i class="fas fa-book"></i> Learn</h3>
-                    <p class="step-description">Access resources tailored to your level and continuously enhance your trading skills.</p>
+                <div class="step">
+                    <div class="step-number"><i class="fas fa-pencil-alt"></i></div>
+                    <div class="step-content">
+                        <h3 class="step-title">School Supplies</h3>
+                        <p class="step-description">
+                            We also stock essential school supplies including pens, pencils, notebooks, highlighters, sticky notes, index cards, and more to help you stay prepared for class.
+                        </p>
+                    </div>
                 </div>
+            </div>
+            
+            <div class="price-comparison">
+                <h3>Price Comparison</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Eagle Shack Price</th>
+                            <th>Vending Machine Price</th>
+                            <th>You Save</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Chips & Snacks</td>
+                            <td>$1.25</td>
+                            <td>$1.75</td>
+                            <td>$0.50</td>
+                        </tr>
+                        <tr>
+                            <td>Chocolate Bars</td>
+                            <td>$2.00</td>
+                            <td>$2.50</td>
+                            <td>$0.50</td>
+                        </tr>
+                        <tr>
+                            <td>Canned Sodas</td>
+                            <td>$1.00</td>
+                            <td>$1.50</td>
+                            <td>$0.50</td>
+                        </tr>
+                        <tr>
+                            <td>Bottled Drinks</td>
+                            <td>$2.00</td>
+                            <td>$2.75</td>
+                            <td>$0.75</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
-
-    <!-- Dashboard Preview -->
-    <section class="dashboard-preview">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Trading Dashboard</h2>
-                <p class="section-description">Experience our intuitive interface designed for professional trading.</p>
-            </div>
-            
-            <img src="https://via.placeholder.com/1100x600/0077b6/ffffff?text=Hedgex+Dashboard" alt="Hedgex Trading Dashboard" class="dashboard-image">
-        </div>
-    </section>
-
+    
     <!-- About Section -->
     <section class="about-section" id="about">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">About Hedgex</h2>
-                <p class="section-description">Democratizing financial education for everyone.</p>
+                <h2 class="section-title">About Eagle Shack</h2>
+                <p class="section-description">Your on-campus store supporting student initiatives and providing real-world business experience.</p>
             </div>
             
             <div class="about-content">
-                <p>Hedgex was created by a team of financial professionals and educators who believe that learning to invest shouldn't require risking real money. Our platform combines cutting-edge technology with comprehensive educational resources to provide a realistic trading experience without the financial stakes.</p>
-                <p>Whether you're a student, career-changer, or simply curious about investing, Hedgex gives you the tools and knowledge to navigate financial markets with confidence.</p>
-                
-                <div class="about-stats">
-                    <div class="stat-item">
-                        <div class="stat-number">50K+</div>
-                        <div class="stat-label">Stocks Available</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">$100K+</div>
-                        <div class="stat-label">Virtual Starting Cash</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">Market Access</div>
+                <div class="about-text">
+                    <p>Eagle Shack is Prosper High School's student-run store, providing convenient access to snacks, drinks, and school supplies at competitive prices. More than just a store, Eagle Shack serves as a hands-on learning environment where student volunteers gain valuable experience in retail management, customer service, inventory control, and financial operations.</p>
+                    <p>With over 27 high school volunteers rotating through different roles, Eagle Shack gives students the opportunity to develop essential business skills while serving their school community. All profits from Eagle Shack sales support various student programs and initiatives at Prosper High School.</p>
+                    
+                    <div class="about-stats">
+                        <div class="stat-card">
+                            <div class="stat-number">27+</div>
+                            <div class="stat-label">Student Volunteers</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">250+</div>
+                            <div class="stat-label">Products</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">$45K</div>
+                            <div class="stat-label">Sales Target</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section" id="download">
+    
+    <!-- Location & Hours Section -->
+    <section class="cta-section" id="location">
         <div class="container">
-            <div class="cta-content">
-                <h2 class="cta-title">Start Learning Today</h2>
-                <p class="cta-description">Join thousands of traders mastering the market with zero financial risk.</p>
-                <a href="#" class="cta-button-white">
-                    <i class="fas fa-download"></i> Download Hedgex
+            <h2 class="cta-title">Visit Eagle Shack Today!</h2>
+            <p class="cta-description">We're conveniently located near the cafeteria at Prosper High School.</p>
+            <div class="hours-info">
+                <h3>Store Hours:</h3>
+                <ul class="hours-list">
+                    <li><strong>Morning:</strong> 7:30 AM - 8:15 AM</li>
+                    <li><strong>Lunch Periods:</strong> 11:30 AM - 1:30 PM</li>
+                    <li><strong>After School:</strong> 4:00 PM - 4:45 PM</li>
+                </ul>
+            </div>
+            <div class="cta-buttons">
+                <a href="#feedback" class="cta-button">
+                    <i class="fas fa-comment"></i> Give Feedback
                 </a>
             </div>
         </div>
     </section>
-
+    
+    <!-- Feedback Section -->
+    <section class="feedback-section" id="feedback">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">We Value Your Feedback</h2>
+                <p class="section-description">Help us improve Eagle Shack by sharing your product suggestions and experiences.</p>
+            </div>
+            <div class="feedback-content">
+                <p>What products would you like to see at Eagle Shack? Let us know by completing our student sentiment survey:</p>
+                <div class="feedback-button">
+                    <a href="https://forms.gle/tqpL57TMnWR2yXtAA" target="_blank" class="cta-button">
+                        <i class="fas fa-clipboard-list"></i> Take Our Product Survey
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-container">
-                <div class="footer-col">
-                    <div class="footer-logo">Hedgex</div>
-                    <p class="footer-description">Learn to trade with confidence using our risk-free stock market simulator.</p>
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <i class="fas fa-store logo-icon"></i>
+                        <h2>Eagle Shack</h2>
+                    </div>
+                    <p class="footer-description">Prosper High School's student-run store providing snacks, drinks, and school supplies at competitive prices.</p>
                 </div>
                 
-                <div class="footer-col">
+                <div class="footer-column">
                     <h3 class="footer-title">Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="#features" class="footer-link">Features</a></li>
-                        <li><a href="#how-it-works" class="footer-link">How It Works</a></li>
-                        <li><a href="#about" class="footer-link">About Us</a></li>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#location">Location & Hours</a></li>
                     </ul>
                 </div>
                 
-                <div class="footer-col">
-                    <h3 class="footer-title">Legal</h3>
+                <div class="footer-column">
+                    <h3 class="footer-title">Contact</h3>
                     <ul class="footer-links">
-                        <li><a href="#" class="footer-link">Privacy Policy</a></li>
-                        <li><a href="#" class="footer-link">Terms of Service</a></li>
-                        <li><a href="#" class="footer-link">Contact</a></li>
+                        <li><i class="fas fa-map-marker-alt"></i> Prosper High School</li>
+                        <li><i class="fas fa-envelope"></i> eagleshack@prosperhigh.edu</li>
+                        <li><a href="https://forms.gle/tqpL57TMnWR2yXtAA" target="_blank">Product Survey Form</a></li>
                     </ul>
                 </div>
             </div>
-            
             <div class="footer-bottom">
-                <p>&copy; 2025 Hedgex. All rights reserved. | Designed for financial learning, not actual investment advice.</p>
+                <p>&copy; 2025 Eagle Shack - Prosper High School. All rights reserved.</p>
             </div>
         </div>
     </footer>
-
+    
     <!-- Back to Top Button -->
     <div class="back-to-top">
         <i class="fas fa-arrow-up"></i>
     </div>
 
+    <!-- JavaScript -->
     <script>
-        // Theme toggle
+        // Theme toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
             const themeToggle = document.querySelector('.theme-toggle');
-            const savedTheme = localStorage.getItem('theme') || 'light';
             
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeIcon(savedTheme);
+            // Check for saved theme preference or use prefer-color-scheme
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             
+            // Apply theme based on saved preference or system preference
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.innerHTML = '☀️';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeToggle.innerHTML = '🌙';
+            }
+            
+            // Toggle theme when button is clicked
             themeToggle.addEventListener('click', function() {
                 const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
                 
                 document.documentElement.setAttribute('data-theme', newTheme);
                 localStorage.setItem('theme', newTheme);
-                updateThemeIcon(newTheme);
+                
+                // Update toggle button appearance
+                themeToggle.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
             });
-            
-            function updateThemeIcon(theme) {
-                const icon = theme === 'dark' ? '☀️' : '🌙';
-                document.querySelector('.theme-toggle').textContent = icon;
-            }
-        });
+            });
         
-        // Mobile menu
+        // Mobile menu toggle
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
         const navLinks = document.querySelector('.nav-links');
         
@@ -1093,14 +1929,28 @@
             navLinks.classList.toggle('active');
         });
         
-        // Close menu on link click
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
+        // Modal functionality
+        const modal = document.getElementById('demoModal');
+        const openModalBtns = document.querySelectorAll('.open-demo-modal');
+        const closeModal = document.querySelector('.close-modal');
+        
+        openModalBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.style.display = 'flex';
             });
         });
         
-        // Back to top
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        
+        // Back to top button
         const backToTopBtn = document.querySelector('.back-to-top');
         
         window.addEventListener('scroll', () => {
@@ -1112,16 +1962,112 @@
         });
         
         backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
         
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Charts initialization with Chart.js
+        document.addEventListener('DOMContentLoaded', function() {
+            // S&P 500 Chart
+            const sp500Ctx = document.getElementById('sp500Chart').getContext('2d');
+            const sp500Chart = new Chart(sp500Ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                    datasets: [{
+                        label: 'S&P 500',
+                        data: [4563, 4580, 4592, 4605, 4620],
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(37, 99, 235, 1)',
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+            
+            // Sector Chart
+            const sectorCtx = document.getElementById('sectorChart').getContext('2d');
+            const sectorChart = new Chart(sectorCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tech', 'Finance', 'Healthcare', 'Energy', 'Consumer'],
+                    datasets: [{
+                        label: 'Weekly Performance',
+                        data: [3.2, 1.8, 2.5, -0.7, 1.2],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.7)',
+                            'rgba(37, 99, 235, 0.6)',
+                            'rgba(37, 99, 235, 0.5)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(37, 99, 235, 0.4)'
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Portfolio Chart
+            const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+            const portfolioChart = new Chart(portfolioCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Portfolio Value',
+                        data: [122300, 122650, 123200, 123800, 124450, 124100, 124567.89],
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderColor: 'rgba(37, 99, 235, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(37, 99, 235, 1)',
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
                 }
             });
         });
