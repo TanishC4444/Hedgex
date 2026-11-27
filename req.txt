@@ -1,2 +1,5 @@
-# Compatibility with the original setup command.
--r requirements.txt
+flask
+yfinance
+pandas
+requests
+pytz
