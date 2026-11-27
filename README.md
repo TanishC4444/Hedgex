@@ -1,3 +1,8 @@
+> **Earlier HedgeX variant.** Current project maintenance is in
+> [Hedgex](https://github.com/TanishC4444/Hedgex). This repository preserves its
+> original implementation and project history; code and templates differ between
+> variants. Eagle Shack is a separate school-store project.
+
 ![A connected paper-trading, market-analysis, education, and portfolio workstation](https://images.unsplash.com/photo-1773266110858-acb9b6c43b15?auto=format&fit=crop&w=1800&h=600&q=82)
 *Real photography by [Daniel Brzdęk on Unsplash](https://unsplash.com/photos/financial-stock-market-data-displayed-on-a-screen-EuIqk6LpUU0).*
 
