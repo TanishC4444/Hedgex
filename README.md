@@ -1,3 +1,8 @@
+> **Earlier HedgeX variant.** Current project maintenance is in
+> [Hedgex](https://github.com/TanishC4444/Hedgex). This repository preserves its
+> original implementation and project history; code and templates differ between
+> variants. Eagle Shack is a separate school-store project.
+
 # PCIS Fantasy Stock Market Game
 
 A Flask-based educational paper-trading application that lets students practice investing with virtual money.
@@ -65,7 +70,7 @@ python test.py
 
 ## Status
 
-Active educational project.
+Historical educational project. Current HedgeX maintenance is in [Hedgex](https://github.com/TanishC4444/Hedgex).
 
 ## License
 
