@@ -1,18 +1,12 @@
 # HedgeX
 
-A local Flask project for paper trading, stock research, strategy exploration,
-and investing lessons. Trades use simulated funds; market-data features need
-an internet connection.
+Explore stock research, paper trading, strategy ideas, and investing lessons in a local Flask app. Trades use simulated funds; quotes and historical prices require internet access.
 
-This is the maintained HedgeX repository. The related
-[finalSMGHedgex](https://github.com/TanishC4444/finalSMGHedgex) and
-[PCIS_FantasySMG](https://github.com/TanishC4444/PCIS_FantasySMG) repositories
-preserve earlier project variants with different code and templates. They are
-not interchangeable copies. Eagle Shack is a separate school-store project.
+![HedgeX running locally with simulated account state](docs/local-preview.jpg)
 
 ## Run locally
 
-Requires Python 3.10+.
+Requires Python 3.10+ and Git. Run these commands in a terminal:
 
 ```sh
 git clone --filter=blob:none https://github.com/TanishC4444/Hedgex.git
@@ -23,39 +17,25 @@ python -m pip install -r requirements.txt
 python app.py
 ```
 
-On Windows, activate with `.venv\Scripts\activate`. Open
-`http://127.0.0.1:5000`. The old `pip install -r req.txt` command also works.
+On Windows, activate with `.venv\Scripts\activate`. Open <http://127.0.0.1:5000>. No API key is required for the checked public market-data path.
 
-## What is included
+The app keeps simulated holdings, transactions, and balances in local CSV/text files. Use synthetic state for demonstrations. This is a single-user prototype; shared files, expression evaluation, and account isolation need further work before public hosting.
 
-- Flask routes and analysis in `app.py`
-- Learning, trading, simulator, and analysis pages under `templates/`
-- Local CSV/text files for simulated holdings, transactions, and balance
-- [Portfolio analysis](PORTFOLIO_ANALYSIS.md) and example images under `docs/`
-
-## Check the app
+## Check your setup
 
 ```sh
 python -m pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-The smoke checks cover page rendering, a fresh simulated balance, and input
-validation without fetching market data. Live quotes, trading calculations,
-and strategy evaluation need separate integration checks.
+Seven offline tests cover page rendering, initial balance, and input validation. A separate live stock-page check returned 78 historical price records for AAPL. Provider availability and market data can change; these checks do not validate every strategy or financial calculation.
 
-## Current limits
+If installation fails, confirm the virtual environment is active and use the required Python version. If market data is unavailable, check connectivity and retry later. Stop the local server with Ctrl+C.
 
-Run this as a local, single-user prototype. Shared file persistence, formula
-evaluation, and missing account isolation need review before public hosting.
-The existing CSV files are project state, not a multi-user database. Use copies
-or synthetic data for demonstrations. Historical market results do not predict
-future outcomes.
+## Project details
 
-[MIT license](LICENSE), consistent with the existing license in the related
-finalSMGHedgex project. No code or history was discarded when identifying the
-maintained version.
-
-![Actual local app with fresh simulated state](docs/local-preview.jpg)
-
-[Consolidated source and history](docs/consolidation/README.md)
+- `app.py`: routes, analysis, and simulation logic.
+- `templates/`: learning, trading, and analysis interfaces.
+- [Portfolio analysis](PORTFOLIO_ANALYSIS.md).
+- [Earlier variants and preserved history](docs/consolidation/README.md). This is the maintained repo; `finalSMGHedgex` and `PCIS_FantasySMG` are archived.
+- [MIT license](LICENSE).
