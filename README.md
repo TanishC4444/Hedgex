@@ -1,90 +1,57 @@
-# Hedgex
+# HedgeX
 
-A full-stack financial-literacy platform that combines paper trading, strategy backtesting, fund comparison, stock analysis, and structured investing lessons.
+A local Flask project for paper trading, stock research, strategy exploration,
+and investing lessons. Trades use simulated funds; market-data features need
+an internet connection.
 
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Flask-2.x-000000)](https://flask.palletsprojects.com/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+This is the maintained HedgeX repository. The related
+[finalSMGHedgex](https://github.com/TanishC4444/finalSMGHedgex) and
+[PCIS_FantasySMG](https://github.com/TanishC4444/PCIS_FantasySMG) repositories
+preserve earlier project variants with different code and templates. They are
+not interchangeable copies. Eagle Shack is a separate school-store project.
 
-## Overview
+## Run locally
 
-Hedgex provides a risk-free environment for learning market concepts with simulated capital and real market data. Users can trade paper portfolios, compare investment strategies against historical data, and study investing concepts through structured lessons.
+Requires Python 3.10+.
 
-## Features
-
-- Paper trading with virtual capital
-- Historical strategy backtesting
-- Fund comparison against SPY
-- Stock research and market metrics
-- Beginner and advanced learning tracks
-- Transaction and portfolio tracking
-
-## Prerequisites
-
-- Python 3.10+
-- pip
-- Internet access for Yahoo Finance market data
-
-## Installation
-
-```bash
+```sh
 git clone https://github.com/TanishC4444/Hedgex.git
 cd Hedgex
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\\Scripts\\activate
-pip install -r requirements.txt
-```
-
-## Quick Start
-
-```bash
+source .venv/bin/activate
+python -m pip install -r requirements.txt
 python app.py
 ```
 
-Open `http://127.0.0.1:5000` in your browser.
+On Windows, activate with `.venv\Scripts\activate`. Open
+`http://127.0.0.1:5000`. The old `pip install -r req.txt` command also works.
 
-## Project Structure
+## What is included
 
-```text
-Hedgex/
-├── app.py
-├── main.html
-├── practice.html
-├── learn.html
-├── simulator.html
-├── analysis.html
-├── users.csv
-├── sold.csv
-├── transactions.csv
-├── balance.txt
-└── requirements.txt
+- Flask routes and analysis in `app.py`
+- Learning, trading, simulator, and analysis pages under `templates/`
+- Local CSV/text files for simulated holdings, transactions, and balance
+- [Portfolio analysis](PORTFOLIO_ANALYSIS.md) and example images under `docs/`
+
+## Check the app
+
+```sh
+python -m pip install -r requirements-dev.txt
+python -m pytest -q
 ```
 
-## Data and Privacy
+The smoke checks cover page rendering, a fresh simulated balance, and input
+validation without fetching market data. Live quotes, trading calculations,
+and strategy evaluation need separate integration checks.
 
-The application uses local CSV/text files for portfolio and transaction state. Do not commit real credentials or private user data. A production deployment should replace shared local files with a concurrency-safe persistence layer.
+## Current limits
 
-## Testing
+Run this as a local, single-user prototype. Shared file persistence, formula
+evaluation, and missing account isolation need review before public hosting.
+The existing CSV files are project state, not a multi-user database. Use copies
+or synthetic data for demonstrations. Historical market results do not predict
+future outcomes.
 
-Run the project's available test suite or development checks before deployment. The repository does not currently document a single canonical test command.
-
-## Roadmap
-
-- Persistent user accounts
-- Options-trading simulation
-- Watchlists and price alerts
-- Mobile-responsive trading interface
-- Classroom leaderboard
-- Additional backtesting strategies
-
-## Disclaimer
-
-Hedgex is an educational simulation. It does not provide investment advice, and historical backtest performance does not guarantee future results.
-
-## License
-
-MIT
-
-## Support
-
-Use GitHub Issues for bugs, questions, and feature requests.
+[MIT license](LICENSE), consistent with the existing license in the related
+finalSMGHedgex project. No code or history was discarded when identifying the
+maintained version.
