@@ -55,3 +55,5 @@ future outcomes.
 [MIT license](LICENSE), consistent with the existing license in the related
 finalSMGHedgex project. No code or history was discarded when identifying the
 maintained version.
+
+![Actual local app with fresh simulated state](docs/local-preview.jpg)
