@@ -1,0 +1,62 @@
+[
+  {
+    "source": "Hedgex_dist",
+    "branch": "reconcile/current-desktop",
+    "commit": "cef7e64b3a776acba0d45e4f9f978e88776fe536",
+    "source_sha256": {
+      "app.py": "dcd55e0e58498686f08c85318d5a472df56c8401125b885207d543974e838ef1",
+      "app.spec": "c479d920a5295c559f646bebf80a1575362a5ebf8492704181ae04074e1cb8c3",
+      "index.html": "a5488c7856aa92525e48e405534e8309174c9808fb59bc2d9df4befccb20e52a",
+      "req.txt": "503e5b6ea57859d9762802dc8caa8e305d31316b5acf4aaebbc74c64480f8e70",
+      "templates/analysis.html": "fd836fdadec80032fea9968c160412e963106280b055e47d46ff90bd2c1e7782",
+      "templates/learn.html": "a83e05c67781eb24a27aa561cc4aaf3c66df48fe6e78cbf5cf3dd5fbad9dc314",
+      "templates/main.html": "e1c2c1083bda3c03508ae561aa7ff91c100ab288f3b4d69a2640fc4625297d25",
+      "templates/practice.html": "9ce2d03064fe6dadbabd0b6beaf2e39ba082e96b555371adf83652f794dab687",
+      "templates/simulator.html": "72a24dd86f1cad40bd0ba8a3173d7e12e864a7c14d81b4898a876eb2c06304a2",
+      "test.py": "c9bd79b3004b7bbcc362e41b7f348b756a33784d403d20505f7963428e1d23b6"
+    },
+    "note": "Runtime CSV balances and transaction records stay in the original local folder.",
+    "original_history_commit": "9634c111971598a78b02815dbe69ff04626d0386",
+    "history_note": "Original full local history is unchanged. Its old compiled executables exceed GitHub file limits; this branch preserves the current source tree without importing those build binaries."
+  },
+  {
+    "source": "PCIS_FantasySMG",
+    "branch": "reconcile/current-pcis",
+    "commit": "1b8409e4c78eedd3d1e49af495d9435ed8042b4e",
+    "source_sha256": {
+      "app.py": "dcd55e0e58498686f08c85318d5a472df56c8401125b885207d543974e838ef1",
+      "app.spec": "c479d920a5295c559f646bebf80a1575362a5ebf8492704181ae04074e1cb8c3",
+      "index.html": "a5488c7856aa92525e48e405534e8309174c9808fb59bc2d9df4befccb20e52a",
+      "req.txt": "b4f9298e65227554b9fb30e80db2865b0797a59d68c495e42854c11ebdaca782",
+      "templates/analysis.html": "fd836fdadec80032fea9968c160412e963106280b055e47d46ff90bd2c1e7782",
+      "templates/learn.html": "a83e05c67781eb24a27aa561cc4aaf3c66df48fe6e78cbf5cf3dd5fbad9dc314",
+      "templates/main.html": "e1c2c1083bda3c03508ae561aa7ff91c100ab288f3b4d69a2640fc4625297d25",
+      "templates/practice.html": "9ce2d03064fe6dadbabd0b6beaf2e39ba082e96b555371adf83652f794dab687",
+      "templates/simulator.html": "72a24dd86f1cad40bd0ba8a3173d7e12e864a7c14d81b4898a876eb2c06304a2",
+      "test.py": "c9bd79b3004b7bbcc362e41b7f348b756a33784d403d20505f7963428e1d23b6"
+    },
+    "note": "Runtime CSV balances and transaction records stay in the original local folder.",
+    "original_history_commit": "89afa298b57f237535cc1b195f819a44f01a8084",
+    "history_note": "Original full local history is unchanged. Its old compiled executables exceed GitHub file limits; this branch preserves the current source tree without importing those build binaries."
+  },
+  {
+    "source": "finalSMGHedgex",
+    "branch": "reconcile/current-final-smg",
+    "commit": "d003df186aff8c70a7bb0dcf3c9738ad3ea40c6e",
+    "source_sha256": {
+      "app.py": "9ecfa9e226030330e4d7a28eee4734727b12a76573db34bd5fb08d1603d10dd8",
+      "index.html": "f9bcf82e994781c308188b5d3445ca16d4178acaaaf2d7b0657914ea7de1b047",
+      "req.txt": "b4f9298e65227554b9fb30e80db2865b0797a59d68c495e42854c11ebdaca782",
+      "requirements.txt": "5e4a82b381065897675c2ff31227514a4372ad087c783d4b1b1d189482e2d28b",
+      "templates/analysis.html": "d9b52d7800cb65791bdbdaf720218cad259d0cd4187dc0a1e39a1b088d5a0e7e",
+      "templates/learn.html": "c15857e8771dce8c9f28e2537de42775c321cb80faca586a6c25f58860c1cb44",
+      "templates/main.html": "aefdc107f9f13dec3732b9068f3214c1a562585fff18717f12b700759f733b1c",
+      "templates/practice.html": "94eedabd6af293e889a820bb1280f0654cb913d8c636730549d43ab3226e86ce",
+      "templates/simulator.html": "5f3cc2d174fde8cf2ed027a3c18fff31ce4fdcdc1e697df1404aa582fe0bc399",
+      "test.py": "978d4382614186e2ca2daffbf9e98f5b7059eb5df05f6ec6b3ad13edd2975161"
+    },
+    "note": "Runtime CSV balances and transaction records stay in the original local folder.",
+    "original_history_commit": "657c4bac4c767276f8b746cc93492bd3d30afc7f",
+    "history_note": "Original full local history is unchanged. Its old compiled executables exceed GitHub file limits; this branch preserves the current source tree without importing those build binaries."
+  }
+]
