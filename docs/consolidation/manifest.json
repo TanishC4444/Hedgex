@@ -1,0 +1,171 @@
+{
+  "canonical": "Hedgex",
+  "base_commit": "f0d63a4475e0eaebb6066d46c8713249e3cc3975",
+  "imports": [
+    {
+      "source": "finalSMGHedgex",
+      "original_default_head": "82c0207f8b8ff51adbcae762646e08ba204cfe46",
+      "original_default_tree": "520d70ed242f4f2274c9b6c90b5ae7222d8e3b47",
+      "refs": [
+        {
+          "source_ref": "refs/heads/main",
+          "destination_ref": "refs/heads/history/finalSMGHedgex/main",
+          "sha": "82c0207f8b8ff51adbcae762646e08ba204cfe46"
+        },
+        {
+          "source_ref": "refs/tags/v1.0.0",
+          "destination_ref": "refs/tags/history/finalSMGHedgex/v1.0.0",
+          "sha": "c5e49d54bcee74ebe0b1364067a41fdd1ffdab07"
+        },
+        {
+          "source_ref": "refs/tags/v1.0.1",
+          "destination_ref": "refs/tags/history/finalSMGHedgex/v1.0.1",
+          "sha": "c5e49d54bcee74ebe0b1364067a41fdd1ffdab07"
+        },
+        {
+          "source_ref": "refs/tags/v1.0.2",
+          "destination_ref": "refs/tags/history/finalSMGHedgex/v1.0.2",
+          "sha": "c5e49d54bcee74ebe0b1364067a41fdd1ffdab07"
+        }
+      ],
+      "history_sha_preserved": true
+    },
+    {
+      "source": "PCIS_FantasySMG",
+      "original_default_head": "b9653515830a5b6738d46af80cd70085128b0f3a",
+      "original_default_tree": "4781be8bbf3c690b3dda4031f7614043046f3c59",
+      "refs": [
+        {
+          "source_ref": "refs/heads/main",
+          "destination_ref": "refs/heads/history/PCIS_FantasySMG/main",
+          "sha": "b9653515830a5b6738d46af80cd70085128b0f3a"
+        },
+        {
+          "source_ref": "refs/heads/shubhrose-deployment",
+          "destination_ref": "refs/heads/history/PCIS_FantasySMG/shubhrose-deployment",
+          "sha": "11bd4fbb064f8d5522171c3496fabb96579b7cff"
+        },
+        {
+          "source_ref": "refs/tags/Mac",
+          "destination_ref": "refs/tags/history/PCIS_FantasySMG/Mac",
+          "sha": "e4572c3a8c137010ff4e2b991f208aecc5f5285a"
+        }
+      ],
+      "history_sha_preserved": true
+    }
+  ],
+  "local_imports": [
+    {
+      "source": "/Users/tanishchauhan/Desktop/CS Projects/Hedgex_dist",
+      "mirror": "/Users/tanishchauhan/Documents/Codex/2026-11-26/i-w/work/repo-consolidation/local-hedgex-desktop.git",
+      "label": "hedgex-desktop",
+      "compiled_blobs_excluded_from_import": [],
+      "original_local_history_untouched": true,
+      "refs": [
+        {
+          "source_ref": "refs/heads/main",
+          "destination_ref": "refs/heads/history/local-hedgex-desktop/heads/main",
+          "sha": "9634c111971598a78b02815dbe69ff04626d0386"
+        },
+        {
+          "source_ref": "refs/remotes/origin/main",
+          "destination_ref": "refs/heads/history/local-hedgex-desktop/remotes/origin/main",
+          "sha": "b68fca018dd9df6c5047b7d4d45ab45d80e6b964"
+        }
+      ]
+    },
+    {
+      "source": "/Users/tanishchauhan/Desktop/CS Projects/PCIS_FantasySMG",
+      "mirror": "/Users/tanishchauhan/Documents/Codex/2026-11-26/i-w/work/repo-consolidation/local-pcis-desktop.git",
+      "label": "pcis-desktop",
+      "compiled_blobs_excluded_from_import": [
+        {
+          "sha": "d96c30482b36410770cd6bb185a47def6a50e025",
+          "bytes": 94007552,
+          "path": "output/app"
+        },
+        {
+          "sha": "a370b3db769feda0def7a2a9f7ae0ec53df5ab82",
+          "bytes": 234639632,
+          "path": "output/app"
+        },
+        {
+          "sha": "37d37ae4a834988eaab1f3a4493fd44fb9abf5b5",
+          "bytes": 234626704,
+          "path": "output/app"
+        },
+        {
+          "sha": "6c3418b672c7c6e9996c8bd1a7efb6039d8dc7b4",
+          "bytes": 93987904,
+          "path": "output/app"
+        },
+        {
+          "sha": "888502283f98143ca17faf7ef4f42d3381497752",
+          "bytes": 93987808,
+          "path": "output/prototypeV1"
+        },
+        {
+          "sha": "f60f42916747e69122fe99c2d6698d2ffd077076",
+          "bytes": 32299312,
+          "path": "output/app/_internal/libicudata.73.dylib"
+        }
+      ],
+      "original_local_history_untouched": true,
+      "refs": [
+        {
+          "source_ref": "refs/heads/main",
+          "destination_ref": "refs/heads/history/local-pcis-desktop/heads/main",
+          "sha": "8eac170cc8d608cc1c5f6e603f7e548ffbe334b9"
+        },
+        {
+          "source_ref": "refs/heads/shubhrose-deployment",
+          "destination_ref": "refs/heads/history/local-pcis-desktop/heads/shubhrose-deployment",
+          "sha": "0655a4773f286a8d561e8d6defb83ec091b84c00"
+        },
+        {
+          "source_ref": "refs/tags/Mac",
+          "destination_ref": "refs/tags/history/local-pcis-desktop/tags/Mac",
+          "sha": "10c3d17a37a9ce970997764870119b6c0a4914e9"
+        }
+      ]
+    },
+    {
+      "source": "/Users/tanishchauhan/Desktop/CS Projects/finalSMGHedgex",
+      "mirror": "/Users/tanishchauhan/Documents/Codex/2026-11-26/i-w/work/repo-consolidation/local-final-smg-desktop.git",
+      "label": "final-smg-desktop",
+      "compiled_blobs_excluded_from_import": [],
+      "original_local_history_untouched": true,
+      "refs": [
+        {
+          "source_ref": "refs/heads/main",
+          "destination_ref": "refs/heads/history/local-final-smg-desktop/heads/main",
+          "sha": "c5e49d54bcee74ebe0b1364067a41fdd1ffdab07"
+        },
+        {
+          "source_ref": "refs/remotes/origin/main",
+          "destination_ref": "refs/heads/history/local-final-smg-desktop/remotes/origin/main",
+          "sha": "44b5e966f93e2994bc3c8ec5cb4bf8619b1a4aab"
+        },
+        {
+          "source_ref": "refs/tags/v1.0.0",
+          "destination_ref": "refs/tags/history/local-final-smg-desktop/tags/v1.0.0",
+          "sha": "c5e49d54bcee74ebe0b1364067a41fdd1ffdab07"
+        },
+        {
+          "source_ref": "refs/tags/v1.0.1",
+          "destination_ref": "refs/tags/history/local-final-smg-desktop/tags/v1.0.1",
+          "sha": "c5e49d54bcee74ebe0b1364067a41fdd1ffdab07"
+        },
+        {
+          "source_ref": "refs/tags/v1.0.2",
+          "destination_ref": "refs/tags/history/local-final-smg-desktop/tags/v1.0.2",
+          "sha": "c5e49d54bcee74ebe0b1364067a41fdd1ffdab07"
+        }
+      ]
+    }
+  ],
+  "archive_candidates": [
+    "finalSMGHedgex",
+    "PCIS_FantasySMG"
+  ]
+}

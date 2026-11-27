@@ -15,7 +15,7 @@ not interchangeable copies. Eagle Shack is a separate school-store project.
 Requires Python 3.10+.
 
 ```sh
-git clone https://github.com/TanishC4444/Hedgex.git
+git clone --filter=blob:none https://github.com/TanishC4444/Hedgex.git
 cd Hedgex
 python -m venv .venv
 source .venv/bin/activate
@@ -57,3 +57,5 @@ finalSMGHedgex project. No code or history was discarded when identifying the
 maintained version.
 
 ![Actual local app with fresh simulated state](docs/local-preview.jpg)
+
+[Consolidated source and history](docs/consolidation/README.md)
