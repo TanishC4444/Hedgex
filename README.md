@@ -1,3 +1,5 @@
+> **Archived duplicate.** Continue in [TanishC4444/Hedgex](https://github.com/TanishC4444/Hedgex). This repository's source branches and release tags are preserved there under `history/PCIS_FantasySMG/`. The old copy remains available read-only.
+
 > **Earlier HedgeX variant.** Current project maintenance is in
 > [Hedgex](https://github.com/TanishC4444/Hedgex). This repository preserves its
 > original implementation and project history; code and templates differ between
